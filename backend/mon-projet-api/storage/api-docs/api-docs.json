@@ -1,0 +1,145 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Mon API Laravel 2026",
+        "description": "Documentation de mon API générée avec Swagger",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:8000",
+            "description": "Serveur Local"
+        }
+    ],
+    "paths": {
+        "/api/tests": {
+            "get": {
+                "tags": [
+                    "Tests"
+                ],
+                "summary": "Lister les tests",
+                "operationId": "c3598ffb3c07bda8666677e0af191019",
+                "responses": {
+                    "200": {
+                        "description": "Liste des tests"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Tests"
+                ],
+                "summary": "Créer un test",
+                "operationId": "c7eb3253343224d6c1b7b1b4d40b2715",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Test API"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Description"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Test créé"
+                    }
+                }
+            }
+        },
+        "/api/tests/{id}": {
+            "get": {
+                "tags": [
+                    "Tests"
+                ],
+                "summary": "Afficher un test",
+                "operationId": "de30187932c824c2e3ab0c2c58d75c07",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Test trouvé"
+                    },
+                    "404": {
+                        "description": "Test non trouvé"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Tests"
+                ],
+                "summary": "Modifier un test",
+                "operationId": "ab4f548be935192551295fba7b6f95d4",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Test modifié"
+                    },
+                    "404": {
+                        "description": "Test non trouvé"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Tests"
+                ],
+                "summary": "Supprimer un test",
+                "operationId": "a45d0482034d370675c1eab805dcda68",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Test supprimé"
+                    }
+                }
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Tests",
+            "description": "API CRUD Test"
+        }
+    ]
+}
