@@ -12,6 +12,258 @@
         }
     ],
     "paths": {
+        "/api/register": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Créer un nouvel utilisateur",
+                "operationId": "8e4e3cb7b46126f4696379d3c7eeb4ad",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "password",
+                                    "role_id"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "example": "test@example.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "example": "123456"
+                                    },
+                                    "role_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Utilisateur créé avec succès"
+                    },
+                    "422": {
+                        "description": "Données invalides"
+                    }
+                }
+            }
+        },
+        "/api/login": {
+            "post": {
+                "tags": [
+                    "LoginAttempts"
+                ],
+                "summary": "Login utilisateur avec gestion des tentatives",
+                "operationId": "f6bf077cad33bd16e75b2122c26e965b",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "example": "test@example.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "example": "123456"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Connexion réussie"
+                    },
+                    "401": {
+                        "description": "Email ou mot de passe invalide"
+                    },
+                    "423": {
+                        "description": "Compte bloqué"
+                    }
+                }
+            }
+        },
+        "/api/reset-block/{user_id}": {
+            "post": {
+                "tags": [
+                    "LoginAttempts"
+                ],
+                "summary": "Réinitialiser le blocage d'un utilisateur",
+                "operationId": "10ab2e7619cd9dfd696c8d05f10fa31e",
+                "parameters": [
+                    {
+                        "name": "user_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Blocage réinitialisé"
+                    }
+                }
+            }
+        },
+        "/api/roles": {
+            "get": {
+                "tags": [
+                    "Roles"
+                ],
+                "summary": "Lister les rôles",
+                "operationId": "ca86f0a206144dfbd695b749b4b28f9d",
+                "responses": {
+                    "200": {
+                        "description": "Liste des rôles"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Roles"
+                ],
+                "summary": "Créer un rôle",
+                "operationId": "341b8b162b61267c7bd187500aea5bc4",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "libelle"
+                                ],
+                                "properties": {
+                                    "libelle": {
+                                        "type": "string",
+                                        "example": "Administrateur"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Rôle créé"
+                    }
+                }
+            }
+        },
+        "/api/roles/{id}": {
+            "get": {
+                "tags": [
+                    "Roles"
+                ],
+                "summary": "Afficher un rôle",
+                "operationId": "15c404caf238f1861c81f68205d328e5",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Rôle trouvé"
+                    },
+                    "404": {
+                        "description": "Rôle non trouvé"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Roles"
+                ],
+                "summary": "Modifier un rôle",
+                "operationId": "c73ab816ae8fb7c34a995d37ba577082",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "libelle"
+                                ],
+                                "properties": {
+                                    "libelle": {
+                                        "type": "string",
+                                        "example": "Utilisateur"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Rôle modifié"
+                    },
+                    "404": {
+                        "description": "Rôle non trouvé"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Roles"
+                ],
+                "summary": "Supprimer un rôle",
+                "operationId": "ffa6ef115d86b00cc6c54a6210019f9c",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Rôle supprimé"
+                    }
+                }
+            }
+        },
         "/api/tests": {
             "get": {
                 "tags": [
@@ -134,12 +386,83 @@
                     }
                 }
             }
+        },
+        "/api/users/{id}": {
+            "put": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Modifier les informations d'un utilisateur",
+                "operationId": "070e37fc9aff78ae73860751bc990ed3",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "example": "nouvel.email@example.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "example": "nouveauMotDePasse"
+                                    },
+                                    "role_id": {
+                                        "type": "integer",
+                                        "example": 2
+                                    },
+                                    "blocked": {
+                                        "type": "boolean",
+                                        "example": false
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Utilisateur modifié"
+                    },
+                    "404": {
+                        "description": "Utilisateur non trouvé"
+                    }
+                }
+            }
         }
     },
     "tags": [
         {
+            "name": "Auth",
+            "description": "Gestion de l'inscription et du login"
+        },
+        {
+            "name": "LoginAttempts",
+            "description": "Gestion des tentatives de connexion et blocage"
+        },
+        {
+            "name": "Roles",
+            "description": "API CRUD pour les rôles"
+        },
+        {
             "name": "Tests",
             "description": "API CRUD Test"
+        },
+        {
+            "name": "Users",
+            "description": "Gestion des utilisateurs"
         }
     ]
 }
