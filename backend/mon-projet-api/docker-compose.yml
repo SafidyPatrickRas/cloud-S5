@@ -26,10 +26,10 @@ services:
       - laravel
 
   postgres:
-    image: postgres:15
+    image: postgis/postgis:15-3.4
     container_name: laravel_postgres
     environment:
-      POSTGRES_DB: laravel
+      POSTGRES_DB: laravel_db
       POSTGRES_USER: laravel
       POSTGRES_PASSWORD: secret
     ports:
@@ -38,6 +38,19 @@ services:
       - pg_data:/var/lib/postgresql/data
     networks:
       - laravel
+
+
+  tileserver:
+    image: maptiler/tileserver-gl
+    container_name: offline_tileserver
+    volumes:
+      - ./tileserver/data:/data
+    ports:
+      - "8081:8080"
+    networks:
+      - laravel
+    restart: unless-stopped
+
 
 networks:
   laravel:
