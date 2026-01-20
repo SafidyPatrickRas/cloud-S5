@@ -17,9 +17,16 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
-        User::factory()->create([
-            'name' => 'Test User',
+        // seed roles and a manager user
+        $this->call(\Database\Seeders\RolesSeeder::class);
+
+        // create a manager user if not exists
+        \App\Models\User::factory()->create([
             'email' => 'test@example.com',
+            'password' => \Illuminate\Support\Facades\Hash::make('password'),
+            'role_id' => 2,
+            'nom' => 'Test',
+            'prenom' => 'User',
         ]);
     }
 }

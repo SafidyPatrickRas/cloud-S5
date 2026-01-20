@@ -39,18 +39,11 @@ class UserController extends Controller
     )]
     #[OA\Response(response: 200, description: "Utilisateur modifié")]
     #[OA\Response(response: 404, description: "Utilisateur non trouvé")]
-    public function update(Request $request, int $id): JsonResponse
+    public function update(\App\Http\Requests\UpdateUserRequest $request, int $id): JsonResponse
     {
         $user = User::findOrFail($id);
 
-        $request->validate([
-            'email' => 'sometimes|email|unique:users,email,' . $user->id,
-            'password' => 'sometimes|min:6',
-            'role_id' => 'sometimes|integer',
-            'blocked' => 'sometimes|boolean',
-        ]);
-
-        $data = $request->all();
+        $data = $request->validated();
 
         if (isset($data['password'])) {
             $data['password'] = Hash::make($data['password']);
