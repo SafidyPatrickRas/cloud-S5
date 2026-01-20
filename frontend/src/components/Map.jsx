@@ -17,41 +17,14 @@ L.Icon.Default.mergeOptions({
 });
 
 function Map({ center = [-18.8792, 47.5079], zoom = 13, height = '500px', markers = [], onMarkerClick }) {
-// Composant pour capturer les coordonnées du curseur
-function CursorCoordinates({ onCoordinatesChange }) {
-  useMapEvents({
-    mousemove: (e) => {
-      onCoordinatesChange(e.latlng);
-    },
-    mouseout: () => {
-      onCoordinatesChange(null);
-    }
-  });
-  return null;
-}
-
-function Map({ center = [-18.8792, 47.5079], zoom = 13, height = '500px', markers = [] }) {
-  const [cursorPosition, setCursorPosition] = useState(null);
-
   return (
     <div className="map-wrapper" style={{ height }}>
-      {/* Affichage des coordonnées */}
-      {cursorPosition && (
-        <div className="coordinates-display">
-          <strong>Latitude:</strong> {cursorPosition.lat.toFixed(6)} | 
-          <strong> Longitude:</strong> {cursorPosition.lng.toFixed(6)}
-        </div>
-      )}
-      
       <MapContainer
         center={center}
         zoom={zoom}
         style={{ height: '100%', width: '100%' }}
         scrollWheelZoom={true}
       >
-        {/* Capturer les coordonnées du curseur */}
-        <CursorCoordinates onCoordinatesChange={setCursorPosition} />
-        
         {/* Utiliser le serveur de tuiles local - format raster PNG */}
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -72,14 +45,10 @@ function Map({ center = [-18.8792, 47.5079], zoom = 13, height = '500px', marker
                 }
               },
               mouseover: (e) => {
-                if (marker.popup) {
-                  e.target.openPopup();
-                }
+                e.target.openPopup();
               },
               mouseout: (e) => {
-                if (marker.popup) {
-                  e.target.closePopup();
-                }
+                e.target.closePopup();
               }
             }}
           >
@@ -95,17 +64,12 @@ function Map({ center = [-18.8792, 47.5079], zoom = 13, height = '500px', marker
               </Tooltip>
             )}
             {/* Popup pour les détails au survol/clic */}
-            {marker.popup && (
-              <Popup closeButton={false}>
-                <div dangerouslySetInnerHTML={{ __html: marker.popup }} />
-              </Popup>
-            )}
+            {marker.popup && <Popup dangerouslySetInnerHTML={{ __html: marker.popup }} />}
           </Marker>
         ))}
       </MapContainer>
     </div>
   );
 }
-}
 
-export default Map ;
+export default Map;
