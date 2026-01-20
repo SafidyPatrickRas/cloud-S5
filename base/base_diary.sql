@@ -1,5 +1,6 @@
 /* =========================================================
-PROJET : Suivi des travaux routiers - Antananarivo
+PROJET : Application de suivi des travaux routiers
+VILLE  : Antananarivo
 SGBD   : PostgreSQL + PostGIS
 ========================================================= */
 
@@ -52,14 +53,12 @@ CREATE TABLE entreprise (
     email VARCHAR(150)
 );
 
-/* =========================
-TABLE SIGNALEMENT (PostGIS)
-========================= */
-CREATE TABLE signalement (
-    id_signalement UUID PRIMARY KEY DEFAULT uuid_generate_v4 (),
-    id_user UUID,
+/* =========================================================
+TABLE PROBLEME ROUTIER (LE POINT CARTOGRAPHIQUE)
+========================================================= */
+CREATE TABLE probleme_routier (
+    id_probleme UUID PRIMARY KEY DEFAULT uuid_generate_v4 (),
     geom GEOMETRY (Point, 4326) NOT NULL,
-    date_signalement TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     status VARCHAR(20) CHECK (
         status IN (
             'NOUVEAU',
@@ -70,18 +69,35 @@ CREATE TABLE signalement (
     surface_m2 NUMERIC (10, 2),
     budget NUMERIC (14, 2),
     id_entreprise INT,
-    source VARCHAR(20) CHECK (
-        source IN ('LOCAL', 'FIREBASE')
-    ) DEFAULT 'LOCAL',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT fk_signalement_user FOREIGN KEY (id_user) REFERENCES app_user (id_user) ON DELETE SET NULL,
-    CONSTRAINT fk_signalement_entreprise FOREIGN KEY (id_entreprise) REFERENCES entreprise (id_entreprise) ON DELETE SET NULL
+    CONSTRAINT fk_probleme_entreprise FOREIGN KEY (id_entreprise) REFERENCES entreprise (id_entreprise) ON DELETE SET NULL
 );
 
 /* =========================
-TABLE SYNC LOG
+INDEX SPATIAL (PostGIS)
 ========================= */
+CREATE INDEX idx_probleme_geom ON probleme_routier USING GIST (geom);
+
+/* =========================================================
+TABLE SIGNALEMENT (ACTION UTILISATEUR)
+========================================================= */
+CREATE TABLE signalement (
+    id_signalement UUID PRIMARY KEY DEFAULT uuid_generate_v4 (),
+    id_probleme UUID NOT NULL,
+    id_user UUID,
+    date_signalement TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    source VARCHAR(20) CHECK (
+        source IN ('LOCAL', 'FIREBASE')
+    ) DEFAULT 'LOCAL',
+    commentaire TEXT,
+    CONSTRAINT fk_signalement_probleme FOREIGN KEY (id_probleme) REFERENCES probleme_routier (id_probleme) ON DELETE CASCADE,
+    CONSTRAINT fk_signalement_user FOREIGN KEY (id_user) REFERENCES app_user (id_user) ON DELETE SET NULL
+);
+
+/* =========================================================
+TABLE SYNC LOG
+========================================================= */
 CREATE TABLE sync_log (
     id_sync SERIAL PRIMARY KEY,
     type_sync VARCHAR(10) CHECK (type_sync IN ('PUSH', 'PULL')),
@@ -94,31 +110,26 @@ CREATE TABLE sync_log (
     CONSTRAINT fk_sync_manager FOREIGN KEY (id_manager) REFERENCES app_user (id_user)
 );
 
-/* =========================
-INDEX SPATIAL
-========================= */
-CREATE INDEX idx_signalement_geom ON signalement USING GIST (geom);
-
-/* =========================
-VUE CARTE
-========================= */
-CREATE VIEW v_carte_signalement AS
+/* =========================================================
+VUE CARTE (POINTS + INFOS)
+========================================================= */
+CREATE VIEW v_carte_probleme AS
 SELECT
-    s.id_signalement,
-    ST_Y (s.geom) AS latitude,
-    ST_X (s.geom) AS longitude,
-    s.date_signalement,
-    s.status,
-    s.surface_m2,
-    s.budget,
+    p.id_probleme,
+    ST_Y (p.geom) AS latitude,
+    ST_X (p.geom) AS longitude,
+    p.status,
+    p.surface_m2,
+    p.budget,
     e.nom AS entreprise
-FROM signalement s
-    LEFT JOIN entreprise e ON s.id_entreprise = e.id_entreprise;
+FROM
+    probleme_routier p
+    LEFT JOIN entreprise e ON p.id_entreprise = e.id_entreprise;
 
-/* =========================
-VUE RECAPITULATIVE
-========================= */
-CREATE VIEW v_recap_signalement AS
+/* =========================================================
+VUE RÉCAPITULATIVE
+========================================================= */
+CREATE VIEW v_recap_probleme AS
 SELECT
     COUNT(*) AS nb_points,
     SUM(surface_m2) AS total_surface,
@@ -128,13 +139,11 @@ SELECT
         / NULLIF(COUNT(*), 0),
         2
     ) AS avancement_pct
-FROM signalement;
+FROM probleme_routier;
 
-/* =========================
-DONNEES INITIALES
-========================= */
-
--- Compte manager par défaut
+/* =========================================================
+DONNÉE INITIALE : MANAGER PAR DÉFAUT
+========================================================= */
 INSERT INTO
     app_user (
         email,
