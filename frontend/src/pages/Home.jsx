@@ -10,6 +10,7 @@ function Home() {
   
   const [problemes, setProblemes] = useState([]);
   const [stats, setStats] = useState(null);
+  const [activeView, setActiveView] = useState('map'); // 'map' ou 'summary'
 
   useEffect(() => {
     // Charger les données de test
@@ -99,74 +100,148 @@ function Home() {
           </p>
         </section>
 
-        {/* Statistiques */}
-        {stats && (
-          <section className="stats-section">
-            <div className="stats-grid">
-              <div className="stat-card nouveau">
-                <div className="stat-icon">🆕</div>
-                <div className="stat-value">{stats.nb_nouveaux}</div>
-                <div className="stat-label">Nouveaux</div>
-              </div>
-              <div className="stat-card en-cours">
-                <div className="stat-icon">🚧</div>
-                <div className="stat-value">{stats.nb_en_cours}</div>
-                <div className="stat-label">En Cours</div>
-              </div>
-              <div className="stat-card termine">
-                <div className="stat-icon">✅</div>
-                <div className="stat-value">{stats.nb_termines}</div>
-                <div className="stat-label">Terminés</div>
-              </div>
-              <div className="stat-card total">
-                <div className="stat-icon">📊</div>
-                <div className="stat-value">{stats.avancement_pct}%</div>
-                <div className="stat-label">Avancement</div>
-              </div>
-            </div>
-          </section>
-        )}
+        {/* Section avec Sidebar et Contenu Principal */}
+        <section className="content-section">
+          <div className="content-wrapper">
+            {/* Sidebar */}
+            <aside className="sidebar">
+              <h3 className="sidebar-title">Navigation</h3>
+              <nav className="sidebar-nav">
+                <button 
+                  className={`nav-item ${activeView === 'map' ? 'active' : ''}`}
+                  onClick={() => setActiveView('map')}
+                >
+                  <span className="nav-icon">🗺️</span>
+                  <span className="nav-label">Carte Interactive</span>
+                </button>
+                <button 
+                  className={`nav-item ${activeView === 'summary' ? 'active' : ''}`}
+                  onClick={() => setActiveView('summary')}
+                >
+                  <span className="nav-icon">📊</span>
+                  <span className="nav-label">Tableau Récapitulatif</span>
+                </button>
+              </nav>
 
-        {/* Section Carte Interactive */}
-        <section className="map-section">
-          <h3 className="section-title">Carte des Problèmes Routiers</h3>
-          <p className="section-description">
-            {problemes.length} problèmes routiers signalés à Antananarivo
-          </p>
-          <Map 
-            center={antananarivoCenter} 
-            zoom={13} 
-            height="600px"
-            markers={markers}
-          />
-        </section>
+              {/* Informations supplémentaires dans la sidebar */}
+              {stats && (
+                <div className="sidebar-stats">
+                  <h4 className="sidebar-stats-title">Statistiques Rapides</h4>
+                  <div className="sidebar-stat-item">
+                    <span className="sidebar-stat-icon">📍</span>
+                    <div>
+                      <div className="sidebar-stat-value">{stats.nb_total_problemes}</div>
+                      <div className="sidebar-stat-label">Points signalés</div>
+                    </div>
+                  </div>
+                  <div className="sidebar-stat-item">
+                    <span className="sidebar-stat-icon">📈</span>
+                    <div>
+                      <div className="sidebar-stat-value">{stats.avancement_pct}%</div>
+                      <div className="sidebar-stat-label">Avancement</div>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </aside>
 
-        <section className="visitor-section">
-          <h3 className="section-title">Fonctionnalités</h3>
-          <div className="cards-container">
-            <div className="card">
-              <div className="card-icon">📍</div>
-              <h4 className="card-title">Signalement</h4>
-              <p className="card-description">
-                Signalez les problèmes routiers directement sur la carte
-              </p>
-            </div>
-
-            <div className="card">
-              <div className="card-icon">📊</div>
-              <h4 className="card-title">Suivi en temps réel</h4>
-              <p className="card-description">
-                Suivez l'avancement des travaux de réparation
-              </p>
-            </div>
-
-            <div className="card">
-              <div className="card-icon">ℹ️</div>
-              <h4 className="card-title">Informations</h4>
-              <p className="card-description">
-                Consultez les détails de chaque intervention
-              </p>
-            </div>
+            {/* Contenu Principal */}
+            <main className="main-content">
+              {activeView === 'map' ? (
+                <div className="map-view">
+                  <h3 className="view-title">🗺️ Carte des Problèmes Routiers</h3>
+                  <p className="view-description">
+                    {problemes.length} problèmes routiers signalés à Antananarivo
+                  </p>
+                  <Map 
+                    center={antananarivoCenter} 
+                    zoom={13} 
+                    height="600px"
+                    markers={markers}
+                  />
+                </div>
+              ) : (
+                <div className="summary-view">
+                  <h3 className="view-title">📊 Tableau de Récapitulation Détaillé</h3>
+                  {stats && (
+                    <div className="summary-table-container">
+                      <table className="summary-table">
+                        <thead>
+                          <tr>
+                            <th>Indicateur</th>
+                            <th>Valeur</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td>
+                              <span className="indicator-icon">📍</span>
+                              <strong>Nombre de points signalés</strong>
+                            </td>
+                            <td className="value-cell">{stats.nb_total_problemes}</td>
+                          </tr>
+                          <tr>
+                            <td>
+                              <span className="indicator-icon nouveau-icon">🆕</span>
+                              <strong>Nouveaux problèmes</strong>
+                            </td>
+                            <td className="value-cell nouveau-value">{stats.nb_nouveaux}</td>
+                          </tr>
+                          <tr>
+                            <td>
+                              <span className="indicator-icon encours-icon">🚧</span>
+                              <strong>Travaux en cours</strong>
+                            </td>
+                            <td className="value-cell encours-value">{stats.nb_en_cours}</td>
+                          </tr>
+                          <tr>
+                            <td>
+                              <span className="indicator-icon termine-icon">✅</span>
+                              <strong>Travaux terminés</strong>
+                            </td>
+                            <td className="value-cell termine-value">{stats.nb_termines}</td>
+                          </tr>
+                          <tr>
+                            <td>
+                              <span className="indicator-icon">📏</span>
+                              <strong>Surface totale concernée</strong>
+                            </td>
+                            <td className="value-cell">
+                              {stats.total_surface_m2.toLocaleString('fr-FR')} m²
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>
+                              <span className="indicator-icon">💰</span>
+                              <strong>Budget total alloué</strong>
+                            </td>
+                            <td className="value-cell budget-value">
+                              {(stats.total_budget / 1000000).toLocaleString('fr-FR', {
+                                minimumFractionDigits: 1,
+                                maximumFractionDigits: 1
+                              })} M Ar
+                            </td>
+                          </tr>
+                          <tr className="highlight-row">
+                            <td>
+                              <span className="indicator-icon">📈</span>
+                              <strong>Avancement global</strong>
+                            </td>
+                            <td className="value-cell avancement-value">
+                              <div className="progress-container">
+                                <div className="progress-bar" style={{width: `${stats.avancement_pct}%`}}>
+                                  {stats.avancement_pct}%
+                                </div>
+                              </div>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
+                </div>
+              )}
+            </main>
           </div>
         </section>
       </main>
