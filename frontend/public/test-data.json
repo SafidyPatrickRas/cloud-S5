@@ -1,0 +1,193 @@
+{
+  "roles": [
+    {
+      "id": 1,
+      "libelle": "UTILISATEUR"
+    },
+    {
+      "id": 2,
+      "libelle": "MANAGER"
+    }
+  ],
+  "users": [
+    {
+      "id": "550e8400-e29b-41d4-a716-446655440001",
+      "email": "manager@travaux.mg",
+      "nom": "Rakoto",
+      "prenom": "Jean",
+      "blocked": false,
+      "role_id": 2,
+      "created_at": "2026-01-15T08:00:00Z"
+    },
+    {
+      "id": "550e8400-e29b-41d4-a716-446655440002",
+      "email": "user@travaux.mg",
+      "nom": "Rabe",
+      "prenom": "Marie",
+      "blocked": false,
+      "role_id": 1,
+      "created_at": "2026-01-16T09:00:00Z"
+    }
+  ],
+  "entreprises": [
+    {
+      "id_entreprise": 1,
+      "nom": "SECREN Madagascar",
+      "contact": "Direction Générale",
+      "telephone": "+261 20 22 123 45",
+      "email": "contact@secren.mg"
+    },
+    {
+      "id_entreprise": 2,
+      "nom": "COLAS Madagascar",
+      "contact": "Service Travaux",
+      "telephone": "+261 20 22 234 56",
+      "email": "travaux@colas.mg"
+    },
+    {
+      "id_entreprise": 3,
+      "nom": "GTBTP",
+      "contact": "Chef de Projet",
+      "telephone": "+261 20 22 345 67",
+      "email": "projet@gtbtp.mg"
+    }
+  ],
+  "problemes_routiers": [
+    {
+      "id_probleme": "650e8400-e29b-41d4-a716-446655440001",
+      "latitude": -18.8792,
+      "longitude": 47.5079,
+      "status": "NOUVEAU",
+      "surface_m2": 25.5,
+      "budget": 5000000,
+      "id_entreprise": null,
+      "description": "Nids de poule importants",
+      "lieu": "Avenue de l'Indépendance - Analakely",
+      "created_at": "2026-01-18T10:30:00Z"
+    },
+    {
+      "id_probleme": "650e8400-e29b-41d4-a716-446655440002",
+      "latitude": -18.8810,
+      "longitude": 47.5100,
+      "status": "EN_COURS",
+      "surface_m2": 45.0,
+      "budget": 8500000,
+      "id_entreprise": 1,
+      "description": "Chaussée endommagée après pluies",
+      "lieu": "Route Circulaire - Tsaralalana",
+      "created_at": "2026-01-15T14:20:00Z",
+      "updated_at": "2026-01-17T09:00:00Z"
+    },
+    {
+      "id_probleme": "650e8400-e29b-41d4-a716-446655440003",
+      "latitude": -18.9134,
+      "longitude": 47.5361,
+      "status": "TERMINE",
+      "surface_m2": 30.0,
+      "budget": 6000000,
+      "id_entreprise": 2,
+      "description": "Réparation terminée",
+      "lieu": "Route de l'Aéroport - Ivato",
+      "created_at": "2026-01-10T08:00:00Z",
+      "updated_at": "2026-01-19T16:30:00Z"
+    },
+    {
+      "id_probleme": "650e8400-e29b-41d4-a716-446655440004",
+      "latitude": -18.8650,
+      "longitude": 47.5250,
+      "status": "NOUVEAU",
+      "surface_m2": 18.0,
+      "budget": 3500000,
+      "id_entreprise": null,
+      "description": "Affaissement de chaussée",
+      "lieu": "Avenue du 26 Juin - Ambohijatovo",
+      "created_at": "2026-01-19T11:15:00Z"
+    },
+    {
+      "id_probleme": "650e8400-e29b-41d4-a716-446655440005",
+      "latitude": -18.8700,
+      "longitude": 47.5150,
+      "status": "EN_COURS",
+      "surface_m2": 52.0,
+      "budget": 10000000,
+      "id_entreprise": 3,
+      "description": "Réfection complète en cours",
+      "lieu": "Avenue Rainilaiarivony - Isoraka",
+      "created_at": "2026-01-12T07:45:00Z",
+      "updated_at": "2026-01-16T10:00:00Z"
+    },
+    {
+      "id_probleme": "650e8400-e29b-41d4-a716-446655440006",
+      "latitude": -18.9000,
+      "longitude": 47.5200,
+      "status": "NOUVEAU",
+      "surface_m2": 15.0,
+      "budget": 2800000,
+      "id_entreprise": null,
+      "description": "Fissures multiples",
+      "lieu": "Rue Rainandriamampandry - Andravoahangy",
+      "created_at": "2026-01-20T08:30:00Z"
+    },
+    {
+      "id_probleme": "650e8400-e29b-41d4-a716-446655440007",
+      "latitude": -18.8850,
+      "longitude": 47.5300,
+      "status": "EN_COURS",
+      "surface_m2": 38.0,
+      "budget": 7200000,
+      "id_entreprise": 1,
+      "description": "Dégradation suite aux intempéries",
+      "lieu": "Boulevard de l'Europe - Ankorondrano",
+      "created_at": "2026-01-14T13:20:00Z",
+      "updated_at": "2026-01-18T11:00:00Z"
+    },
+    {
+      "id_probleme": "650e8400-e29b-41d4-a716-446655440008",
+      "latitude": -18.8950,
+      "longitude": 47.5050,
+      "status": "TERMINE",
+      "surface_m2": 28.0,
+      "budget": 5500000,
+      "id_entreprise": 2,
+      "description": "Travaux achevés avec succès",
+      "lieu": "Avenue Grandidier - Behoririka",
+      "created_at": "2026-01-08T09:00:00Z",
+      "updated_at": "2026-01-19T17:00:00Z"
+    }
+  ],
+  "signalements": [
+    {
+      "id_signalement": "750e8400-e29b-41d4-a716-446655440001",
+      "id_probleme": "650e8400-e29b-41d4-a716-446655440001",
+      "user_id": "550e8400-e29b-41d4-a716-446655440002",
+      "date_signalement": "2026-01-18T10:30:00Z",
+      "source": "LOCAL",
+      "commentaire": "Danger pour les deux-roues, nécessite intervention rapide"
+    },
+    {
+      "id_signalement": "750e8400-e29b-41d4-a716-446655440002",
+      "id_probleme": "650e8400-e29b-41d4-a716-446655440004",
+      "user_id": "550e8400-e29b-41d4-a716-446655440002",
+      "date_signalement": "2026-01-19T11:15:00Z",
+      "source": "LOCAL",
+      "commentaire": "Affaissement important, risque d'accident"
+    },
+    {
+      "id_signalement": "750e8400-e29b-41d4-a716-446655440003",
+      "id_probleme": "650e8400-e29b-41d4-a716-446655440006",
+      "user_id": "550e8400-e29b-41d4-a716-446655440001",
+      "date_signalement": "2026-01-20T08:30:00Z",
+      "source": "FIREBASE",
+      "commentaire": "Fissures qui s'agrandissent chaque jour"
+    }
+  ],
+  "statistiques": {
+    "nb_total_problemes": 8,
+    "nb_nouveaux": 3,
+    "nb_en_cours": 3,
+    "nb_termines": 2,
+    "total_surface_m2": 251.5,
+    "total_budget": 48500000,
+    "avancement_pct": 25.0
+  }
+}

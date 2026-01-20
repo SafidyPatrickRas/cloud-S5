@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup, Tooltip, useMapEvents } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import './Map.css';
@@ -62,6 +62,13 @@ function Map({ center = [-18.8792, 47.5079], zoom = 13, height = '500px', marker
         {/* Afficher les marqueurs si fournis */}
         {markers.map((marker, index) => (
           <Marker key={index} position={marker.position}>
+            {/* Tooltip au survol */}
+            {marker.tooltip && (
+              <Tooltip direction="top" offset={[0, -20]} opacity={0.9}>
+                <div dangerouslySetInnerHTML={{ __html: marker.tooltip }} />
+              </Tooltip>
+            )}
+            {/* Popup au clic */}
             {marker.popup && <Popup dangerouslySetInnerHTML={{ __html: marker.popup }} />}
           </Marker>
         ))}
