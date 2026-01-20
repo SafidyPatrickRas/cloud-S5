@@ -56,5 +56,6 @@ networks:
   laravel:
     driver: bridge
 
+
 volumes:
   pg_data:
