@@ -1,4 +1,8 @@
 import axios from 'axios';
+import { mockAuthService } from './mockAuth';
+
+// Mode test : utiliser mock ou vraie API
+const USE_MOCK = import.meta.env.VITE_USE_MOCK === 'true' || true; // Mettre false pour utiliser la vraie API
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
 

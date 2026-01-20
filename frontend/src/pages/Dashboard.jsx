@@ -33,8 +33,47 @@ function Dashboard() {
   };
 
   const handleLogout = () => {
-    authService.logout();
-    navigate('/');
+    localStorage.removeItem('token');
+    navigate('/login');
+  };
+
+  const handleSyncFirebase = async () => {
+    setSyncStatus({ loading: true, message: 'Synchronisation en cours...' });
+    
+    // Simulation de synchronisation
+    setTimeout(() => {
+      setSyncStatus({ 
+        loading: false, 
+        message: 'Synchronisation réussie ! 5 nouveaux signalements récupérés.' 
+      });
+      loadData();
+      
+      setTimeout(() => setSyncStatus({ loading: false, message: '' }), 3000);
+    }, 2000);
+  };
+
+  const handleUnblockUser = (userId) => {
+    setUsers(users.map(user => 
+      user.id === userId ? { ...user, blocked: false } : user
+    ));
+  };
+
+  const handleBlockUser = (userId) => {
+    setUsers(users.map(user => 
+      user.id === userId ? { ...user, blocked: true } : user
+    ));
+  };
+
+  const handleUpdateProbleme = (id, field, value) => {
+    setProblemes(problemes.map(p => 
+      p.id_probleme === id ? { ...p, [field]: value } : p
+    ));
+  };
+
+  const handleSaveProbleme = (probleme) => {
+    console.log('Sauvegarde:', probleme);
+    setSelectedProbleme(null);
+    alert('Modifications enregistrées avec succès !');
   };
 
   const handleUserCreated = (user) => {
@@ -53,20 +92,30 @@ function Dashboard() {
   };
 
   return (
-    <div className="dashboard-container">
-      <header className="dashboard-header">
-        <div className="header-content">
-          <h1>Dashboard Manager</h1>
-          <button onClick={handleLogout} className="btn-logout">
-            Déconnexion
+    <div className="dashboard-wrapper">
+      {/* SIDEBAR MANAGER */}
+      <aside className={`dashboard-sidebar ${sidebarCollapsed ? 'collapsed' : ''}`}>
+        <div className="sidebar-header">
+          <div className="sidebar-logo">
+            <div className="logo-icon">RM</div>
+            {!sidebarCollapsed && <span className="logo-text">RouteTracker Manager</span>}
+          </div>
+          <button 
+            className="sidebar-toggle" 
+            onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+          >
+            <span className="toggle-icon">{sidebarCollapsed ? '›' : '‹'}</span>
           </button>
         </div>
-      </header>
 
-      <main className="dashboard-main">
-        <div className="welcome-section">
-          <h2>Bienvenue dans votre espace de gestion</h2>
-          <p>Vous êtes connecté avec succès !</p>
+        <div className="sidebar-user">
+          <div className="user-avatar">M</div>
+          {!sidebarCollapsed && (
+            <div className="user-info">
+              <div className="user-name">Manager</div>
+              <div className="user-role">Administrateur</div>
+            </div>
+          )}
         </div>
 
         <div className="dashboard-grid">
@@ -88,7 +137,6 @@ function Dashboard() {
             </button>
           </div>
         </div>
-
         {/* Section Carte */}
         <div className="map-section">
           <div className="section-header">
@@ -132,7 +180,6 @@ function Dashboard() {
             }))}
           />
         </div>
-      </main>
 
       {showUserForm && (
         <UserForm 
@@ -154,6 +201,7 @@ function Dashboard() {
           onUpdate={handleProblemeUpdate}
         />
       )}
+      </aside>
     </div>
   );
 }

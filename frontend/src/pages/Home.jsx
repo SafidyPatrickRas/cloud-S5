@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { problemeService } from '../services/api';
 import Map from '../components/Map';
+import { mockDataService } from '../services/mockData';
 import './Home.css';
 
 function Home() {
@@ -86,10 +87,134 @@ function Home() {
 
       </main>
 
-      <footer className="home-footer">
-        <p>&copy; 2026 Mon Application. Tous droits réservés.</p>
-      </footer>
-    </div>
+        {/* CONTENT AREA INDÉPENDANT */}
+        <main className="app-content">
+          {activeView === 'map' && (
+            <div className="content-view map-view">
+              <div className="view-header">
+                <h2 className="view-title">Carte des Problèmes Routiers</h2>
+                <p className="view-description">
+                  Visualisez en temps réel tous les problèmes signalés sur la carte d'Antananarivo
+                </p>
+              </div>
+              <div className="map-container-full">
+                <Map 
+                  center={antananarivoCenter} 
+                  zoom={13} 
+                  height="100%"
+                  markers={problemes.map(probleme => ({
+                    position: [probleme.latitude, probleme.longitude],
+                    tooltip: `
+                      <div class="map-tooltip">
+                        <strong class="tooltip-title">${probleme.lieu}</strong><br/>
+                        <strong>Date:</strong> ${new Date(probleme.created_at).toLocaleDateString('fr-FR')}<br/>
+                        <strong>Statut:</strong> <span class="status-${probleme.status.toLowerCase()}">${probleme.status}</span><br/>
+                        <strong>Surface:</strong> ${probleme.surface_m2} m²<br/>
+                        <strong>Budget:</strong> ${(probleme.budget / 1000000).toFixed(1)} M Ar
+                      </div>
+                    `,
+                    popup: `
+                      <div class="map-popup">
+                        <h4 class="popup-title">${probleme.lieu}</h4>
+                        <p class="popup-item"><strong>Date:</strong> ${new Date(probleme.created_at).toLocaleDateString('fr-FR')}</p>
+                        <p class="popup-item"><strong>Statut:</strong> ${probleme.status}</p>
+                        <p class="popup-item"><strong>Surface:</strong> ${probleme.surface_m2} m²</p>
+                        <p class="popup-item"><strong>Budget:</strong> ${(probleme.budget / 1000000).toFixed(1)} M Ar</p>
+                        <p class="popup-description">${probleme.description}</p>
+                      </div>
+                    `
+                  }))}
+                />
+              </div>
+            </div>
+          )}
+
+          {activeView === 'table' && stats && (
+            <div className="content-view table-view">
+              <div className="view-header">
+                <h2 className="view-title">Tableau Récapitulatif</h2>
+                <p className="view-description">
+                  Vue d'ensemble des indicateurs clés et statistiques des travaux routiers
+                </p>
+              </div>
+              <div className="table-container-full">
+                <table className="summary-table">
+                  <thead>
+                    <tr>
+                      <th>Indicateur</th>
+                      <th>Valeur</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <span className="indicator-icon">Point</span>
+                        <strong>Nombre de points signalés</strong>
+                      </td>
+                      <td className="value-cell">{stats.nb_total_problemes}</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <span className="indicator-icon nouveau-icon">Nouveau</span>
+                        <strong>Nouveaux problèmes</strong>
+                      </td>
+                      <td className="value-cell nouveau-value">{stats.nb_nouveaux}</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <span className="indicator-icon encours-icon">Cours</span>
+                        <strong>Travaux en cours</strong>
+                      </td>
+                      <td className="value-cell encours-value">{stats.nb_en_cours}</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <span className="indicator-icon termine-icon">Terminé</span>
+                        <strong>Travaux terminés</strong>
+                      </td>
+                      <td className="value-cell termine-value">{stats.nb_termines}</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <span className="indicator-icon">Surface</span>
+                        <strong>Surface totale concernée</strong>
+                      </td>
+                      <td className="value-cell">
+                        {stats.total_surface_m2.toLocaleString('fr-FR')} m²
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <span className="indicator-icon">Budget</span>
+                        <strong>Budget total alloué</strong>
+                      </td>
+                      <td className="value-cell budget-value">
+                        {(stats.total_budget / 1000000).toLocaleString('fr-FR', {
+                          minimumFractionDigits: 1,
+                          maximumFractionDigits: 1
+                        })} M Ar
+                      </td>
+                    </tr>
+                    <tr className="highlight-row">
+                      <td>
+                        <span className="indicator-icon">Avancement</span>
+                        <strong>Avancement global</strong>
+                      </td>
+                      <td className="value-cell avancement-value">
+                        <div className="progress-container">
+                          <div className="progress-bar" style={{width: `${stats.avancement_pct}%`}}>
+                            {stats.avancement_pct}%
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+        </main>
+      </div>
   );
 }
 
