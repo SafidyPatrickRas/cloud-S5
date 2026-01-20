@@ -1,4 +1,5 @@
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import { useState } from 'react';
+import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import './Map.css';
@@ -15,15 +16,41 @@ L.Icon.Default.mergeOptions({
   shadowUrl: markerShadow,
 });
 
+// Composant pour capturer les coordonnées du curseur
+function CursorCoordinates({ onCoordinatesChange }) {
+  useMapEvents({
+    mousemove: (e) => {
+      onCoordinatesChange(e.latlng);
+    },
+    mouseout: () => {
+      onCoordinatesChange(null);
+    }
+  });
+  return null;
+}
+
 function Map({ center = [-18.8792, 47.5079], zoom = 13, height = '500px', markers = [] }) {
+  const [cursorPosition, setCursorPosition] = useState(null);
+
   return (
     <div className="map-wrapper" style={{ height }}>
+      {/* Affichage des coordonnées */}
+      {cursorPosition && (
+        <div className="coordinates-display">
+          <strong>Latitude:</strong> {cursorPosition.lat.toFixed(6)} | 
+          <strong> Longitude:</strong> {cursorPosition.lng.toFixed(6)}
+        </div>
+      )}
+      
       <MapContainer
         center={center}
         zoom={zoom}
         style={{ height: '100%', width: '100%' }}
         scrollWheelZoom={true}
       >
+        {/* Capturer les coordonnées du curseur */}
+        <CursorCoordinates onCoordinatesChange={setCursorPosition} />
+        
         {/* Utiliser le serveur de tuiles local - format raster PNG */}
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'

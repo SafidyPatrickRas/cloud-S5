@@ -2,6 +2,29 @@
   border-radius: 15px;
   overflow: hidden;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+
+/* Affichage des coordonnées */
+.coordinates-display {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(255, 255, 255, 0.95);
+  padding: 8px 16px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  font-size: 14px;
+  color: #2d3748;
+  font-weight: 500;
+  backdrop-filter: blur(10px);
+}
+
+.coordinates-display strong {
+  color: #667eea;
+  margin: 0 4px;
 }
 
 .leaflet-container {
