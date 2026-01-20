@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Hash;
 use OpenApi\Attributes as OA;
 
 #[OA\Tag(
@@ -62,7 +63,7 @@ class LoginAttemptController extends Controller
         }
 
         // Vérifier mot de passe
-        if (!\Hash::check($request->password, $user->password)) {
+        if (!Hash::check($request->password, $user->password)) {
             $loginAttempt->increment('attempts');
 
             if ($loginAttempt->attempts >= $this->maxAttempts) {
@@ -81,10 +82,23 @@ class LoginAttemptController extends Controller
             'blocked_until' => null
         ]);
 
+        // Charger la relation role
+        $user->load('role');
+
         // Générer token JWT
         $token = \Tymon\JWTAuth\Facades\JWTAuth::fromUser($user);
 
-        return response()->json(['token' => $token]);
+        return response()->json([
+            'token' => $token,
+            'user' => [
+                'id' => $user->id,
+                'email' => $user->email,
+                'nom' => $user->nom,
+                'prenom' => $user->prenom,
+                'role' => $user->role->libelle,
+                'role_id' => $user->role_id
+            ]
+        ]);
     }
 
     #[OA\Post(

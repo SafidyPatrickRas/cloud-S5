@@ -16,7 +16,18 @@ function Login() {
     setLoading(true);
 
     try {
-      await authService.login(email, password);
+      const response = await authService.login(email, password);
+      
+      console.log('Response reçue:', response); // Debug
+      
+      // Vérifier si l'utilisateur est un MANAGER
+      if (response.user && response.user.role !== 'MANAGER') {
+        setError('Accès refusé. Cette page est réservée aux managers uniquement.');
+        authService.logout(); // Supprimer le token
+        setLoading(false);
+        return;
+      }
+
       // Rediriger vers le dashboard après connexion réussie
       navigate('/dashboard');
     } catch (err) {

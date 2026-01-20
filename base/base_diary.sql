@@ -107,9 +107,6 @@ CREATE TABLE signalement (
     id_probleme UUID NOT NULL,
     user_id UUID,
     date_signalement TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    source VARCHAR(20) CHECK (
-        source IN ('LOCAL', 'FIREBASE')
-    ) DEFAULT 'LOCAL',
     commentaire TEXT,
     CONSTRAINT fk_signalement_probleme FOREIGN KEY (id_probleme) REFERENCES probleme_routier (id_probleme) ON DELETE CASCADE,
     CONSTRAINT fk_signalement_user FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE SET NULL

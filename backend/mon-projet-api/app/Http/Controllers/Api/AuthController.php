@@ -40,6 +40,8 @@ class AuthController extends Controller
         $request->validate([
             'email' => 'required|email|unique:users,email',
             'password' => 'required|min:6',
+            'nom' => 'nullable|string|max:100',
+            'prenom' => 'nullable|string|max:100',
             'role_id' => 'required|integer'
         ]);
 
@@ -47,8 +49,11 @@ class AuthController extends Controller
         $user = User::create([
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'nom' => $request->nom,
+            'prenom' => $request->prenom,
             'role_id' => $request->role_id,
-            'blocked' => false
+            'blocked' => false,
+            'failed_attempts' => 0
         ]);
 
         // Créer l'enregistrement LoginAttempt avec 0 tentatives

@@ -15,6 +15,18 @@ use OpenApi\Attributes as OA;
 )]
 class UserController extends Controller
 {
+    #[OA\Get(
+        path: "/api/users",
+        summary: "Lister tous les utilisateurs",
+        tags: ["Users"]
+    )]
+    #[OA\Response(response: 200, description: "Liste des utilisateurs")]
+    public function index(): JsonResponse
+    {
+        $users = User::with('role')->get();
+        return response()->json($users);
+    }
+
     #[OA\Put(
         path: "/api/users/{id}",
         summary: "Modifier les informations d'un utilisateur",
@@ -39,7 +51,7 @@ class UserController extends Controller
     )]
     #[OA\Response(response: 200, description: "Utilisateur modifié")]
     #[OA\Response(response: 404, description: "Utilisateur non trouvé")]
-    public function update(Request $request, int $id): JsonResponse
+    public function update(Request $request, string $id): JsonResponse
     {
         $user = User::findOrFail($id);
 

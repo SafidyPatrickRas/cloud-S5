@@ -1,4 +1,5 @@
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup, Tooltip } from 'react-leaflet';
+import { useMapEvents } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import './Map.css';
@@ -15,7 +16,7 @@ L.Icon.Default.mergeOptions({
   shadowUrl: markerShadow,
 });
 
-function Map({ center = [-18.8792, 47.5079], zoom = 13, height = '500px', markers = [] }) {
+function Map({ center = [-18.8792, 47.5079], zoom = 13, height = '500px', markers = [], onMarkerClick }) {
   return (
     <div className="map-wrapper" style={{ height }}>
       <MapContainer
@@ -34,8 +35,44 @@ function Map({ center = [-18.8792, 47.5079], zoom = 13, height = '500px', marker
         
         {/* Afficher les marqueurs si fournis */}
         {markers.map((marker, index) => (
-          <Marker key={index} position={marker.position}>
-            {marker.popup && <Popup dangerouslySetInnerHTML={{ __html: marker.popup }} />}
+          <Marker 
+            key={index} 
+            position={marker.position}
+            eventHandlers={{
+              click: () => {
+                if (onMarkerClick && marker.data) {
+                  onMarkerClick(marker.data);
+                }
+              },
+              mouseover: (e) => {
+                if (marker.popup) {
+                  e.target.openPopup();
+                }
+              },
+              mouseout: (e) => {
+                if (marker.popup) {
+                  e.target.closePopup();
+                }
+              }
+            }}
+          >
+            {/* Tooltip permanent pour afficher le status */}
+            {marker.tooltip && (
+              <Tooltip 
+                permanent={marker.tooltipPermanent !== false} 
+                direction="top"
+                offset={[0, -40]}
+                className="custom-tooltip"
+              >
+                <div dangerouslySetInnerHTML={{ __html: marker.tooltip }} />
+              </Tooltip>
+            )}
+            {/* Popup pour les détails au survol/clic */}
+            {marker.popup && (
+              <Popup closeButton={false}>
+                <div dangerouslySetInnerHTML={{ __html: marker.popup }} />
+              </Popup>
+            )}
           </Marker>
         ))}
       </MapContainer>

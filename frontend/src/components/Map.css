@@ -3,7 +3,21 @@
   overflow: hidden;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
+/* Style personnalisé pour les tooltips permanents */
+.custom-tooltip {
+  background: rgba(102, 126, 234, 0.95) !important;
+  border: none !important;
+  border-radius: 6px !important;
+  padding: 6px 12px !important;
+  font-weight: 600 !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2) !important;
+  color: white !important;
+  font-size: 0.85rem !important;
+}
 
+.custom-tooltip::before {
+  border-top-color: rgba(102, 126, 234, 0.95) !important;
+}
 .leaflet-container {
   font-family: inherit;
 }

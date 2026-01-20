@@ -38,23 +38,56 @@ api.interceptors.response.use(
 
 export const authService = {
   login: async (email, password) => {
-    const response = await api.post('/login', { email, password });
-    if (response.data.token) {
-      localStorage.setItem('token', response.data.token);
+    console.log('🔐 Tentative de login avec:', email);
+    try {
+      const response = await api.post('/login', { email, password });
+      console.log('✅ Réponse du serveur:', response.data);
+      
+      if (response.data.token) {
+        localStorage.setItem('token', response.data.token);
+        console.log('💾 Token stocké');
+      }
+      if (response.data.user) {
+        localStorage.setItem('user', JSON.stringify(response.data.user));
+        console.log('👤 Utilisateur stocké:', response.data.user);
+      }
+      return response.data;
+    } catch (error) {
+      console.error('❌ Erreur login:', error);
+      throw error;
     }
-    return response.data;
   },
 
-  register: async (email, password, role_id) => {
-    const response = await api.post('/register', { email, password, role_id });
-    if (response.data.token) {
-      localStorage.setItem('token', response.data.token);
+  register: async (email, password, role_id, nom = '', prenom = '') => {
+    console.log('📝 Tentative d\'inscription:', { email, role_id, nom, prenom });
+    try {
+      const response = await api.post('/register', { 
+        email, 
+        password, 
+        role_id,
+        nom,
+        prenom
+      });
+      console.log('✅ Inscription réussie:', response.data);
+      
+      // Ne pas stocker automatiquement le token lors de la création par un admin
+      // if (response.data.token) {
+      //   localStorage.setItem('token', response.data.token);
+      // }
+      // if (response.data.user) {
+      //   localStorage.setItem('user', JSON.stringify(response.data.user));
+      // }
+      
+      return response.data;
+    } catch (error) {
+      console.error('❌ Erreur inscription:', error);
+      throw error;
     }
-    return response.data;
   },
 
   logout: () => {
     localStorage.removeItem('token');
+    localStorage.removeItem('user');
   },
 
   isAuthenticated: () => {
@@ -63,6 +96,67 @@ export const authService = {
 
   getToken: () => {
     return localStorage.getItem('token');
+  },
+
+  getUser: () => {
+    const user = localStorage.getItem('user');
+    return user ? JSON.parse(user) : null;
+  },
+
+  isManager: () => {
+    const user = authService.getUser();
+    return user && user.role === 'MANAGER';
+  }
+};
+
+export const problemeService = {
+  getAll: async () => {
+    try {
+      const response = await api.get('/problemes');
+      return response.data;
+    } catch (error) {
+      console.error('❌ Erreur lors de la récupération des problèmes:', error);
+      throw error;
+    }
+  },
+
+  getById: async (id) => {
+    try {
+      const response = await api.get(`/problemes/${id}`);
+      return response.data;
+    } catch (error) {
+      console.error('❌ Erreur lors de la récupération du problème:', error);
+      throw error;
+    }
+  },
+
+  create: async (problemeData) => {
+    try {
+      const response = await api.post('/problemes', problemeData);
+      return response.data;
+    } catch (error) {
+      console.error('❌ Erreur lors de la création du problème:', error);
+      throw error;
+    }
+  },
+
+  update: async (id, problemeData) => {
+    try {
+      const response = await api.put(`/problemes/${id}`, problemeData);
+      return response.data;
+    } catch (error) {
+      console.error('❌ Erreur lors de la mise à jour du problème:', error);
+      throw error;
+    }
+  },
+
+  delete: async (id) => {
+    try {
+      await api.delete(`/problemes/${id}`);
+    } catch (error) {
+      console.error('❌ Erreur lors de la suppression du problème:', error);
+      throw error;
+    }
   }
 };
 

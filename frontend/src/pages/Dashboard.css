@@ -114,6 +114,31 @@
   box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
 }
 
+/* Section Carte */
+.map-section {
+  margin-top: 3rem;
+  background: white;
+  border-radius: 15px;
+  padding: 2rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.map-section .section-header {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.map-section .section-header h3 {
+  font-size: 1.8rem;
+  color: #2d3748;
+  margin-bottom: 0.5rem;
+}
+
+.map-section .section-header p {
+  color: #718096;
+  font-size: 1rem;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .welcome-section h2 {
