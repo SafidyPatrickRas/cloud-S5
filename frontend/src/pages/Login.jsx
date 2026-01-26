@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { authService } from '../services/api';
+import { apiService } from '../services/api';
 import './Login.css';
 
 function Login() {
@@ -16,20 +16,22 @@ function Login() {
     setLoading(true);
 
     try {
-      const response = await authService.login(email, password);
+      const response = await apiService.login({ email, password });
       
-      console.log('Response reçue:', response); // Debug
-      
-      // Vérifier si l'utilisateur est un MANAGER
-      if (response.user && response.user.role !== 'MANAGER') {
-        setError('Accès refusé. Cette page est réservée aux managers uniquement.');
-        authService.logout(); // Supprimer le token
-        setLoading(false);
-        return;
-      }
+      if (response.success) {
+        // Vérifier si l'utilisateur est un MANAGER
+        if (response.user && response.user.role && response.user.role.libelle !== 'MANAGER') {
+          setError('Accès refusé. Cette page est réservée aux managers uniquement.');
+          apiService.logout();
+          setLoading(false);
+          return;
+        }
 
-      // Rediriger vers le dashboard après connexion réussie
-      navigate('/dashboard');
+        console.log('✅ Connexion réussie, redirection vers dashboard');
+        navigate('/dashboard');
+      } else {
+        setError(response.message || 'Erreur de connexion');
+      }
     } catch (err) {
       // Gérer les différents types d'erreurs
       if (err.response) {

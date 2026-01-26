@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { authService, problemeService } from '../services/api';
+import { problemeService } from '../services/api';
+
 import UserForm from '../components/UserForm';
 import UserList from '../components/UserList';
 import ProblemeModal from '../components/ProblemeModal';
@@ -9,12 +10,20 @@ import './Dashboard.css';
 
 function Dashboard() {
   const navigate = useNavigate();
+
+  // UI states
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [showUserForm, setShowUserForm] = useState(false);
   const [showUserList, setShowUserList] = useState(false);
+
+  // Data states
   const [problemes, setProblemes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedProbleme, setSelectedProbleme] = useState(null);
 
+  const [users, setUsers] = useState([]);
+
+  // Load problèmes
   useEffect(() => {
     loadProblemes();
   }, []);
@@ -23,10 +32,9 @@ function Dashboard() {
     try {
       setLoading(true);
       const data = await problemeService.getAll();
-      console.log('📍 Problèmes chargés:', data);
-      setProblemes(data);
+      setProblemes(data || []);
     } catch (error) {
-      console.error('❌ Erreur chargement problèmes:', error);
+      console.error('Erreur chargement problèmes:', error);
     } finally {
       setLoading(false);
     }
@@ -37,75 +45,29 @@ function Dashboard() {
     navigate('/login');
   };
 
-  const handleSyncFirebase = async () => {
-    setSyncStatus({ loading: true, message: 'Synchronisation en cours...' });
-    
-    // Simulation de synchronisation
-    setTimeout(() => {
-      setSyncStatus({ 
-        loading: false, 
-        message: 'Synchronisation réussie ! 5 nouveaux signalements récupérés.' 
-      });
-      loadData();
-      
-      setTimeout(() => setSyncStatus({ loading: false, message: '' }), 3000);
-    }, 2000);
-  };
-
-  const handleUnblockUser = (userId) => {
-    setUsers(users.map(user => 
-      user.id === userId ? { ...user, blocked: false } : user
-    ));
-  };
-
-  const handleBlockUser = (userId) => {
-    setUsers(users.map(user => 
-      user.id === userId ? { ...user, blocked: true } : user
-    ));
-  };
-
-  const handleUpdateProbleme = (id, field, value) => {
-    setProblemes(problemes.map(p => 
-      p.id_probleme === id ? { ...p, [field]: value } : p
-    ));
-  };
-
-  const handleSaveProbleme = (probleme) => {
-    console.log('Sauvegarde:', probleme);
-    setSelectedProbleme(null);
-    alert('Modifications enregistrées avec succès !');
-  };
-
-  const handleUserCreated = (user) => {
-    console.log('👤 Nouvel utilisateur créé:', user);
-    // Vous pouvez ajouter une notification ou actualiser une liste ici
-  };
-
   const handleMarkerClick = (probleme) => {
-    console.log('🗺️ Marqueur cliqué:', probleme);
     setSelectedProbleme(probleme);
   };
 
   const handleProblemeUpdate = () => {
-    console.log('✅ Problème mis à jour, rechargement...');
     loadProblemes();
+    setSelectedProbleme(null);
+  };
+
+  const handleUserCreated = (user) => {
+    console.log('Utilisateur créé:', user);
   };
 
   return (
-    <div className="dashboard-wrapper">
-      {/* SIDEBAR MANAGER */}
-      <aside className={`dashboard-sidebar ${sidebarCollapsed ? 'collapsed' : ''}`}>
+    <div className={`dashboard-wrapper ${sidebarCollapsed ? 'sidebar-collapsed' : ''}`}>
+      
+      {/* Sidebar */}
+      <aside className="dashboard-sidebar">
         <div className="sidebar-header">
           <div className="sidebar-logo">
             <div className="logo-icon">RM</div>
             {!sidebarCollapsed && <span className="logo-text">RouteTracker Manager</span>}
           </div>
-          <button 
-            className="sidebar-toggle" 
-            onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-          >
-            <span className="toggle-icon">{sidebarCollapsed ? '›' : '‹'}</span>
-          </button>
         </div>
 
         <div className="sidebar-user">
@@ -118,90 +80,62 @@ function Dashboard() {
           )}
         </div>
 
+        <div className="sidebar-footer">
+          <button className="btn-logout-sidebar" onClick={handleLogout}>Logout</button>
+        </div>
+      </aside>
+
+      {/* Main content */}
+      <main className="dashboard-main">
+        
+        {/* Dashboard Cards */}
         <div className="dashboard-grid">
           <div className="dashboard-card">
             <div className="card-icon">👥</div>
             <h3>Utilisateurs</h3>
             <p>Ajouter un utilisateur</p>
-            <button className="btn-card" onClick={() => setShowUserForm(true)}>
-              Créer un utilisateur
-            </button>
+            <button  className="btn-user" onClick={() => setShowUserForm(true)}>Créer un utilisateur</button>
           </div>
 
           <div className="dashboard-card">
             <div className="card-icon">⚙️</div>
             <h3>Paramètres</h3>
-            <p>Gérer et paramétrer les utilisateurs</p>
-            <button className="btn-card" onClick={() => setShowUserList(true)}>
-              Gérer les utilisateurs
-            </button>
+            <p>Gérer les utilisateurs</p>
+            <button className="btn-user"  onClick={() => setShowUserList(true)}>Gérer</button>
           </div>
         </div>
-        {/* Section Carte */}
+
+        {/* Map Section */}
         <div className="map-section">
           <div className="section-header">
             <h3>📍 Carte des Problèmes Routiers</h3>
-            <p>
-              {loading 
-                ? 'Chargement des problèmes...' 
-                : `${problemes.length} problème(s) routier(s) détecté(s)`
-              }
-            </p>
+            <p>{loading ? 'Chargement...' : `${problemes.length} problème(s) détecté(s)`}</p>
           </div>
-          <Map 
-            center={[-18.8792, 47.5079]} 
-            zoom={13} 
+
+          <Map
+            center={[-18.8792, 47.5079]}
+            zoom={13}
             height="500px"
-            onMarkerClick={handleMarkerClick}
-            markers={problemes.map(prob => ({
-              position: [parseFloat(prob.latitude), parseFloat(prob.longitude)],
-              data: prob,
-              tooltip: `
-                <div style="text-align: center;">
-                  <strong>${prob.status}</strong><br/>
-                  <small>${prob.signale_par_nom ? `Par: ${prob.signale_par_nom} ${prob.signale_par_prenom || ''}` : 'Non signalé'}</small>
-                </div>
-              `,
-              tooltipPermanent: true,
+            markers={problemes.map(p => ({
+              position: [parseFloat(p.latitude), parseFloat(p.longitude)],
+              data: p,
+              tooltip: p.status,
               popup: `
-                <div style="min-width: 220px;">
-                  <strong style="color: #667eea; font-size: 1.1em;">🚧 Problème Routier</strong><br/>
-                  <hr style="margin: 8px 0; border: none; border-top: 1px solid #e2e8f0;"/>
-                  <strong>Status:</strong> <span style="color: ${prob.status === 'NOUVEAU' ? '#e53e3e' : prob.status === 'EN_COURS' ? '#dd6b20' : '#38a169'};">${prob.status}</span><br/>
-                  ${prob.surface_m2 ? `<strong>Surface:</strong> ${prob.surface_m2} m²<br/>` : ''}
-                  ${prob.budget ? `<strong>Budget:</strong> ${new Intl.NumberFormat('fr-FR', {style: 'currency', currency: 'MGA', minimumFractionDigits: 0}).format(prob.budget)}<br/>` : ''}
-                  ${prob.signale_par_email ? `<strong>Signalé par:</strong> ${prob.signale_par_nom} ${prob.signale_par_prenom || ''}<br/><small>${prob.signale_par_email}</small><br/>` : ''}
-                  ${prob.date_signalement ? `<strong>Date:</strong> ${new Date(prob.date_signalement).toLocaleDateString('fr-FR')}<br/>` : ''}
-                  ${prob.commentaire ? `<strong>Commentaire:</strong> ${prob.commentaire}<br/>` : ''}
-                  <hr style="margin: 8px 0; border: none; border-top: 1px solid #e2e8f0;"/>
-                  <small style="color: #718096;">Cliquez pour modifier</small>
-                </div>
+                <strong>Status:</strong> ${p.status}<br/>
+                <strong>Lat:</strong> ${p.latitude}<br/>
+                <strong>Lng:</strong> ${p.longitude}
               `
             }))}
+            onMarkerClick={handleMarkerClick}
           />
         </div>
+      </main>
 
-      {showUserForm && (
-        <UserForm 
-          onClose={() => setShowUserForm(false)}
-          onUserCreated={handleUserCreated}
-        />
-      )}
+      {/* Modals */}
+      {showUserForm && <UserForm onClose={() => setShowUserForm(false)} onUserCreated={handleUserCreated} />}
+      {showUserList && <UserList onClose={() => setShowUserList(false)} />}
+      {selectedProbleme && <ProblemeModal probleme={selectedProbleme} onClose={() => setSelectedProbleme(null)} onUpdate={handleProblemeUpdate} />}
 
-      {showUserList && (
-        <UserList 
-          onClose={() => setShowUserList(false)}
-        />
-      )}
-
-      {selectedProbleme && (
-        <ProblemeModal
-          probleme={selectedProbleme}
-          onClose={() => setSelectedProbleme(null)}
-          onUpdate={handleProblemeUpdate}
-        />
-      )}
-      </aside>
     </div>
   );
 }

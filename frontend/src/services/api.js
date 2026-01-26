@@ -1,164 +1,162 @@
 import axios from 'axios';
-import { mockAuthService } from './mockAuth';
 
-// Mode test : utiliser mock ou vraie API
-const USE_MOCK = import.meta.env.VITE_USE_MOCK === 'true' || true; // Mettre false pour utiliser la vraie API
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
+const API_BASE_URL = 'http://localhost:8000/api';
 
 const api = axios.create({
-  baseURL: API_URL,
+  baseURL: API_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
+    'Accept': 'application/json',
   },
 });
 
-// Intercepteur pour ajouter le token aux requêtes
-api.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem('authToken');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
   }
-);
+  return config;
+}, (error) => {
+  return Promise.reject(error);
+});
 
-// Intercepteur pour gérer les erreurs de réponse
 api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      // Token invalide ou expiré
-      localStorage.removeItem('token');
+      localStorage.removeItem('authToken');
+      localStorage.removeItem('user');
       window.location.href = '/login';
     }
     return Promise.reject(error);
   }
 );
 
-export const authService = {
-  login: async (email, password) => {
-    console.log('🔐 Tentative de login avec:', email);
+export const apiService = {
+  login: async (credentials) => {
     try {
-      const response = await api.post('/login', { email, password });
-      console.log('✅ Réponse du serveur:', response.data);
+      const response = await api.post('/login', credentials);
+      const { token, user } = response.data;
       
-      if (response.data.token) {
-        localStorage.setItem('token', response.data.token);
-        console.log('💾 Token stocké');
-      }
-      if (response.data.user) {
-        localStorage.setItem('user', JSON.stringify(response.data.user));
-        console.log('👤 Utilisateur stocké:', response.data.user);
-      }
-      return response.data;
+      localStorage.setItem('authToken', token);
+      localStorage.setItem('user', JSON.stringify(user));
+      
+      return { success: true, token, user };
     } catch (error) {
-      console.error('❌ Erreur login:', error);
-      throw error;
-    }
-  },
-
-  register: async (email, password, role_id, nom = '', prenom = '') => {
-    console.log('📝 Tentative d\'inscription:', { email, role_id, nom, prenom });
-    try {
-      const response = await api.post('/register', { 
-        email, 
-        password, 
-        role_id,
-        nom,
-        prenom
-      });
-      console.log('✅ Inscription réussie:', response.data);
-      
-      // Ne pas stocker automatiquement le token lors de la création par un admin
-      // if (response.data.token) {
-      //   localStorage.setItem('token', response.data.token);
-      // }
-      // if (response.data.user) {
-      //   localStorage.setItem('user', JSON.stringify(response.data.user));
-      // }
-      
-      return response.data;
-    } catch (error) {
-      console.error('❌ Erreur inscription:', error);
-      throw error;
+      return {
+        success: false,
+        message: error.response?.data?.message || 'Erreur de connexion'
+      };
     }
   },
 
   logout: () => {
-    localStorage.removeItem('token');
+    localStorage.removeItem('authToken');
     localStorage.removeItem('user');
   },
 
-  isAuthenticated: () => {
-    return !!localStorage.getItem('token');
-  },
-
-  getToken: () => {
-    return localStorage.getItem('token');
-  },
-
-  getUser: () => {
-    const user = localStorage.getItem('user');
-    return user ? JSON.parse(user) : null;
-  },
-
-  isManager: () => {
-    const user = authService.getUser();
-    return user && user.role === 'MANAGER';
-  }
-};
-
-export const problemeService = {
-  getAll: async () => {
+  getProblemes: async () => {
     try {
       const response = await api.get('/problemes');
-      return response.data;
+      return response.data.map(probleme => ({
+        id_probleme: probleme.id_probleme,
+        latitude: parseFloat(probleme.latitude),
+        longitude: parseFloat(probleme.longitude),
+        status: probleme.status,
+        surface_m2: parseFloat(probleme.surface_m2) || 0,
+        budget: parseFloat(probleme.budget) || 0,
+        id_entreprise: probleme.id_entreprise,
+        created_at: probleme.created_at,
+        updated_at: probleme.updated_at,
+        lieu: probleme.lieu || 'Position: ' + probleme.latitude + ', ' + probleme.longitude,
+        description: probleme.commentaire || 'Aucune description disponible'
+      }));
     } catch (error) {
-      console.error('❌ Erreur lors de la récupération des problèmes:', error);
+      console.error('Erreur lors du chargement des problèmes:', error);
       throw error;
     }
   },
 
-  getById: async (id) => {
+  getStatistiques: async () => {
     try {
-      const response = await api.get(`/problemes/${id}`);
-      return response.data;
+      const problemes = await apiService.getProblemes();
+      
+      const stats = {
+        nb_total_problemes: problemes.length,
+        nb_nouveaux: problemes.filter(p => p.status === 'NOUVEAU').length,
+        nb_en_cours: problemes.filter(p => p.status === 'EN_COURS').length,
+        nb_termines: problemes.filter(p => p.status === 'TERMINE').length,
+        total_surface_m2: problemes.reduce((sum, p) => sum + (p.surface_m2 || 0), 0),
+        total_budget: problemes.reduce((sum, p) => sum + (p.budget || 0), 0),
+      };
+
+      stats.avancement_pct = stats.nb_total_problemes > 0 
+        ? Math.round((stats.nb_termines / stats.nb_total_problemes) * 100)
+        : 0;
+
+      return stats;
     } catch (error) {
-      console.error('❌ Erreur lors de la récupération du problème:', error);
+      console.error('Erreur lors du calcul des statistiques:', error);
       throw error;
     }
   },
 
-  create: async (problemeData) => {
+  getEntreprises: async () => {
     try {
-      const response = await api.post('/problemes', problemeData);
+      const response = await api.get('/entreprises');
       return response.data;
     } catch (error) {
-      console.error('❌ Erreur lors de la création du problème:', error);
+      console.error('Erreur lors du chargement des entreprises:', error);
       throw error;
     }
   },
 
-  update: async (id, problemeData) => {
+  getUsers: async () => {
     try {
-      const response = await api.put(`/problemes/${id}`, problemeData);
+      const response = await api.get('/users');
       return response.data;
     } catch (error) {
-      console.error('❌ Erreur lors de la mise à jour du problème:', error);
+      console.error('Erreur lors du chargement des utilisateurs:', error);
       throw error;
     }
   },
 
-  delete: async (id) => {
+  updateProblemeStatus: async (id, status) => {
     try {
-      await api.delete(`/problemes/${id}`);
+      const response = await api.put('/problemes/' + id, { status });
+      return response.data;
     } catch (error) {
-      console.error('❌ Erreur lors de la suppression du problème:', error);
+      console.error('Erreur lors de la mise à jour du statut:', error);
+      throw error;
+    }
+  },
+
+  updateProbleme: async (id, problemeData) => {
+    try {
+      const response = await api.put('/problemes/' + id, problemeData);
+      return response.data;
+    } catch (error) {
+      console.error('Erreur lors de la mise à jour du problème:', error);
+      throw error;
+    }
+  },
+
+  unblockUser: async (userId) => {
+    try {
+      const response = await api.post('/reset-block/' + userId);
+      return response.data;
+    } catch (error) {
+      console.error('Erreur lors du déblocage de l\'utilisateur:', error);
+      throw error;
+    }
+  },
+
+  syncWithFirebase: async () => {
+    try {
+      console.log('Synchronisation Firebase pas encore implémentée');
+      return { success: true, message: 'Synchronisation simulée' };
+    } catch (error) {
+      console.error('Erreur lors de la synchronisation Firebase:', error);
       throw error;
     }
   }
