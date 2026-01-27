@@ -31,7 +31,11 @@ class ProblemeRoutierController extends Controller
                 p.status,
                 p.surface_m2,
                 p.budget,
+                p.lieu,
+                p.description,
                 p.id_entreprise,
+                p.is_deleted,
+                p.last_update,
                 p.created_at,
                 p.updated_at,
                 u.email as signale_par_email,
@@ -40,8 +44,9 @@ class ProblemeRoutierController extends Controller
                 s.date_signalement,
                 s.commentaire
             FROM probleme_routier p
-            LEFT JOIN signalement s ON p.id_probleme = s.id_probleme
+            LEFT JOIN signalement s ON p.id_probleme = s.id_probleme AND s.is_deleted = false
             LEFT JOIN users u ON s.user_id = u.id
+            WHERE p.is_deleted = false
             ORDER BY p.created_at DESC
         ");
 
@@ -128,13 +133,17 @@ class ProblemeRoutierController extends Controller
                 p.status,
                 p.surface_m2,
                 p.budget,
+                p.lieu,
+                p.description,
                 p.id_entreprise,
+                p.is_deleted,
+                p.last_update,
                 e.nom as entreprise_nom,
                 p.created_at,
                 p.updated_at
             FROM probleme_routier p
             LEFT JOIN entreprise e ON p.id_entreprise = e.id_entreprise
-            WHERE p.id_probleme = ?
+            WHERE p.id_probleme = ? AND p.is_deleted = false
         ", [$id]);
 
         if (!$probleme) {
@@ -157,6 +166,8 @@ class ProblemeRoutierController extends Controller
             'status' => 'nullable|in:NOUVEAU,EN_COURS,TERMINE',
             'surface_m2' => 'nullable|numeric|min:0',
             'budget' => 'nullable|numeric|min:0',
+            'lieu' => 'nullable|string|max:255',
+            'description' => 'nullable|string',
             'id_entreprise' => 'nullable|integer|exists:entreprise,id_entreprise'
         ]);
 
@@ -175,29 +186,39 @@ class ProblemeRoutierController extends Controller
             $updates[] = 'budget = ?';
             $params[] = $request->budget;
         }
+        if ($request->has('lieu')) {
+            $updates[] = 'lieu = ?';
+            $params[] = $request->lieu;
+        }
+        if ($request->has('description')) {
+            $updates[] = 'description = ?';
+            $params[] = $request->description;
+        }
         if ($request->has('id_entreprise')) {
             $updates[] = 'id_entreprise = ?';
             $params[] = $request->id_entreprise;
         }
 
         $updates[] = 'updated_at = NOW()';
+        $updates[] = 'last_update = NOW()';
         $params[] = $id;
 
-        DB::update("UPDATE probleme_routier SET " . implode(', ', $updates) . " WHERE id_probleme = ?", $params);
+        DB::update("UPDATE probleme_routier SET " . implode(', ', $updates) . " WHERE id_probleme = ? AND is_deleted = false", $params);
 
         return $this->show($id);
     }
 
     #[OA\Delete(
         path: "/api/problemes/{id}",
-        summary: "Supprimer un problème",
+        summary: "Supprimer un problème (soft delete)",
         tags: ["Problemes Routiers"]
     )]
     #[OA\Parameter(name: "id", in: "path", required: true, schema: new OA\Schema(type: "string"))]
     #[OA\Response(response: 204, description: "Problème supprimé")]
     public function destroy(string $id): JsonResponse
     {
-        DB::delete("DELETE FROM probleme_routier WHERE id_probleme = ?", [$id]);
+        // Soft delete : on met is_deleted à true au lieu de supprimer
+        DB::update("UPDATE probleme_routier SET is_deleted = true, last_update = NOW() WHERE id_probleme = ?", [$id]);
         return response()->json(null, 204);
     }
 }

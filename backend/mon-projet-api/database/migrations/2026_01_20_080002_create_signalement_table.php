@@ -14,6 +14,8 @@ return new class extends Migration
             $table->uuid('user_id')->nullable();
             $table->timestamp('date_signalement')->useCurrent();
             $table->text('commentaire')->nullable();
+            $table->boolean('is_deleted')->default(false);
+            $table->timestamp('last_update')->nullable();
 
             $table->foreign('id_probleme')
                   ->references('id_probleme')

@@ -21,12 +21,18 @@ class ProblemeRoutier extends Model
         'status',
         'surface_m2',
         'budget',
-        'id_entreprise'
+        'lieu',
+        'description',
+        'id_entreprise',
+        'is_deleted',
+        'last_update'
     ];
 
     protected $casts = [
         'surface_m2' => 'decimal:2',
         'budget' => 'decimal:2',
+        'is_deleted' => 'boolean',
+        'last_update' => 'datetime',
     ];
 
     protected static function boot()

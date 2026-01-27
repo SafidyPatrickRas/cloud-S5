@@ -18,7 +18,11 @@ return new class extends Migration
             $table->string('status', 20)->default('NOUVEAU');
             $table->decimal('surface_m2', 10, 2)->nullable();
             $table->decimal('budget', 14, 2)->nullable();
+            $table->string('lieu', 255)->nullable();
+            $table->text('description')->nullable();
             $table->unsignedBigInteger('id_entreprise')->nullable();
+            $table->boolean('is_deleted')->default(false);
+            $table->timestamp('last_update')->nullable();
             $table->timestamps();
 
             $table->foreign('id_entreprise')

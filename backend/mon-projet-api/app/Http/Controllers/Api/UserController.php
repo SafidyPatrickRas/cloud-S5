@@ -23,7 +23,7 @@ class UserController extends Controller
     #[OA\Response(response: 200, description: "Liste des utilisateurs")]
     public function index(): JsonResponse
     {
-        $users = User::with('role')->get();
+        $users = User::with('role')->where('is_deleted', false)->get();
         return response()->json($users);
     }
 
@@ -53,7 +53,7 @@ class UserController extends Controller
     #[OA\Response(response: 404, description: "Utilisateur non trouvé")]
     public function update(Request $request, string $id): JsonResponse
     {
-        $user = User::findOrFail($id);
+        $user = User::where('is_deleted', false)->findOrFail($id);
 
         $request->validate([
             'email' => 'sometimes|email|unique:users,email,' . $user->id,
@@ -68,8 +68,32 @@ class UserController extends Controller
             $data['password'] = Hash::make($data['password']);
         }
 
+        $data['last_update'] = now();
         $user->update($data);
 
         return response()->json($user);
+    }
+
+    #[OA\Delete(
+        path: "/api/users/{id}",
+        summary: "Supprimer un utilisateur (soft delete)",
+        tags: ["Users"]
+    )]
+    #[OA\Parameter(
+        name: "id",
+        in: "path",
+        required: true,
+        schema: new OA\Schema(type: "string")
+    )]
+    #[OA\Response(response: 204, description: "Utilisateur supprimé")]
+    #[OA\Response(response: 404, description: "Utilisateur non trouvé")]
+    public function destroy(string $id): JsonResponse
+    {
+        $user = User::where('is_deleted', false)->findOrFail($id);
+        $user->update([
+            'is_deleted' => true,
+            'last_update' => now()
+        ]);
+        return response()->json(null, 204);
     }
 }

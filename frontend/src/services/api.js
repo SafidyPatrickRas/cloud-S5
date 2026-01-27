@@ -58,10 +58,11 @@ export const authService = {
     }
   },
 
-  register: async (email, password, role_id, nom = '', prenom = '') => {
-    console.log('📝 Tentative d\'inscription:', { email, role_id, nom, prenom });
+  register: async (id,email, password, role_id, nom = '', prenom = '') => {
+    console.log('📝 Tentative d\'inscription:', { id ,email, role_id, nom, prenom });
     try {
       const response = await api.post('/register', { 
+        id,
         email, 
         password, 
         role_id,
@@ -69,15 +70,7 @@ export const authService = {
         prenom
       });
       console.log('✅ Inscription réussie:', response.data);
-      
-      // Ne pas stocker automatiquement le token lors de la création par un admin
-      // if (response.data.token) {
-      //   localStorage.setItem('token', response.data.token);
-      // }
-      // if (response.data.user) {
-      //   localStorage.setItem('user', JSON.stringify(response.data.user));
-      // }
-      
+
       return response.data;
     } catch (error) {
       console.error('❌ Erreur inscription:', error);
