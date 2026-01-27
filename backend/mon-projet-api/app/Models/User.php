@@ -24,7 +24,8 @@ class User extends Authenticatable implements JWTSubject
         'blocked',
         'failed_attempts',
         'is_deleted',
-        'last_update'
+        'last_update',
+        'firebase_uid'
     ];
 
     protected $hidden = [

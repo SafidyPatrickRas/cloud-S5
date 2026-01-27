@@ -22,6 +22,7 @@ return new class extends Migration
             $table->integer('failed_attempts')->default(0);
             $table->boolean('is_deleted')->default(false);
             $table->timestamp('last_update')->nullable();
+            $table->string('firebase_uid')->nullable()->unique();
             $table->timestamps();
         });
     }

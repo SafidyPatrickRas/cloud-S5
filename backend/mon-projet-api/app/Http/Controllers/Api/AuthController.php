@@ -29,7 +29,10 @@ class AuthController extends Controller
             properties: [
                 new OA\Property(property: "email", type: "string", example: "test@example.com"),
                 new OA\Property(property: "password", type: "string", example: "123456"),
-                new OA\Property(property: "role_id", type: "integer", example: 1)
+                new OA\Property(property: "role_id", type: "integer", example: 1),
+                new OA\Property(property: "nom", type: "string", example: "Rakoto"),
+                new OA\Property(property: "prenom", type: "string", example: "Jean"),
+                new OA\Property(property: "firebase_uid", type: "string", example: "abc123xyz789")
             ]
         )
     )]
@@ -42,7 +45,8 @@ class AuthController extends Controller
             'password' => 'required|min:6',
             'nom' => 'nullable|string|max:100',
             'prenom' => 'nullable|string|max:100',
-            'role_id' => 'required|integer'
+            'role_id' => 'required|integer',
+            'firebase_uid' => 'nullable|string|unique:users,firebase_uid'
         ]);
 
         // Création utilisateur
@@ -53,7 +57,8 @@ class AuthController extends Controller
             'prenom' => $request->prenom,
             'role_id' => $request->role_id,
             'blocked' => false,
-            'failed_attempts' => 0
+            'failed_attempts' => 0,
+            'firebase_uid' => $request->firebase_uid
         ]);
 
         // Créer l'enregistrement LoginAttempt avec 0 tentatives
