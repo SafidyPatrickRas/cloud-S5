@@ -56,16 +56,14 @@ function UserForm({ onClose, onUserCreated }) {
       firebaseUser = userCredential.user;
       const uid = firebaseUser.uid;
       console.log('✅ Firebase Auth UID:', uid);
-
-      // 2️⃣ Créer le document Firestore lié à l'utilisateur
-      await setDoc(doc(db, "users", uid), {
-        email: formData.email,
-        nom: formData.nom,
-        prenom: formData.prenom,
-        role_id: parseInt(formData.role_id),
-        createdAt: serverTimestamp()
-      });
-      console.log('✅ Document Firestore créé');
+       await authService.register(
+        formData.email,
+        formData.password,
+        parseInt(formData.role_id),
+        formData.nom,
+        formData.prenom,
+        uid
+      );
 
       setSuccess('Utilisateur créé avec succès !');
 
@@ -76,7 +74,6 @@ function UserForm({ onClose, onUserCreated }) {
       if (onUserCreated) {
         onUserCreated({ uid, ...formData });
       }
-
       // Fermer après 2 secondes
       setTimeout(() => { if (onClose) onClose(); }, 2000);
 
