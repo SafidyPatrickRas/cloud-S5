@@ -108,7 +108,77 @@ export const authService = {
     return user && user.role === 'MANAGER';
   }
 };
+export const userService = {
+  getUsers: async () => {
+    try {
+      const response = await api.get('/users');
+      return response.data;
+    } catch (error) {
+      console.error('❌ Erreur lors de la récupération des utilisateurs:', error);
+      throw error;
+    }
+  },
 
+  updateUser: async (id, userData) => {
+    try {
+      const response = await api.put(`/users/${id}`, userData);
+      return response.data;
+    } catch (error) {
+      console.error('❌ Erreur lors de la mise à jour de l\'utilisateur:', error);
+      throw error;
+    }
+  }
+};
+export const signalementService = { 
+  getAll: async () => {
+    try {
+      const response = await api.get('/signalements');
+      return response.data;
+    } catch (error) {
+      console.error('❌ Erreur lors de la récupération des signalements:', error);
+      throw error;
+    }
+  },
+
+  getById: async (id) => {
+    try {
+      const response = await api.get(`/signalements/${id}`);
+      return response.data;
+    } catch (error) {
+      console.error('❌ Erreur lors de la récupération du signalement:', error);
+      throw error;
+    }
+  },
+
+  create: async (signalementData) => {
+    try {
+      const response = await api.post('/signalements', signalementData);
+      return response.data;
+    } catch (error) {
+      console.error('❌ Erreur lors de la création du signalement:', error);
+      throw error;
+    }
+  },
+
+  update: async (id, signalementData) => {
+    try {
+      const response = await api.put(`/signalements/${id}`, signalementData);
+      return response.data;
+    }               catch (error) {   
+      console.error('❌ Erreur lors de la mise à jour du signalement:', error);
+      throw error;
+    }
+  },
+
+  delete: async (id) => {
+    try {
+      await api.delete(`/signalements/${id}`);
+    } catch (error) {
+      console.error('❌ Erreur lors de la suppression du signalement:', error);
+      throw error;
+    }
+  }
+};
 export const problemeService = {
   getAll: async () => {
     try {

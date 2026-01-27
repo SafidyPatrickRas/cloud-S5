@@ -25,7 +25,7 @@ class Signalement extends Model
         'date_signalement' => 'datetime',
     ];
 
-    public $timestamps = false;
+    public $timestamps = true;
 
     protected static function boot()
     {

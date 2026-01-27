@@ -14,6 +14,8 @@ class ProblemeRoutier extends Model
     public $incrementing = false;
     protected $keyType = 'string';
 
+    public $timestamps = true;  
+
     protected $fillable = [
         'geom',
         'status',

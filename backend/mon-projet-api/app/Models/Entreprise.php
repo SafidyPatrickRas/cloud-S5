@@ -17,7 +17,7 @@ class Entreprise extends Model
         'email'
     ];
 
-    public $timestamps = false;
+    public $timestamps = true;
 
     // Relations
     public function problemesRoutiers()

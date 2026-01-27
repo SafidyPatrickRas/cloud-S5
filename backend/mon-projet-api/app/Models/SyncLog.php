@@ -9,7 +9,7 @@ class SyncLog extends Model
     protected $table = 'sync_log';
     
     protected $primaryKey = 'id_sync';
-
+    public $incrementing = true;
     protected $fillable = [
         'type_sync',
         'date_sync',

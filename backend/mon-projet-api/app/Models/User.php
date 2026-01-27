@@ -14,6 +14,7 @@ class User extends Authenticatable implements JWTSubject
     public $incrementing = false;
     protected $keyType = 'string';
 
+    public $timestamps = true;
     protected $fillable = [
         'email',
         'password',
