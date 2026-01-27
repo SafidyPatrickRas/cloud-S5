@@ -22,7 +22,7 @@ class EntrepriseController extends Controller
     #[OA\Response(response: 200, description: "Liste des entreprises")]
     public function index(): JsonResponse
     {
-        $entreprises = Entreprise::all();
+        $entreprises = Entreprise::where('is_deleted', false)->get();
         return response()->json($entreprises);
     }
 
@@ -66,7 +66,9 @@ class EntrepriseController extends Controller
     #[OA\Response(response: 200, description: "Détails de l'entreprise")]
     public function show(int $id): JsonResponse
     {
-        $entreprise = Entreprise::findOrFail($id);
+        $entreprise = Entreprise::where('id_entreprise', $id)
+            ->where('is_deleted', false)
+            ->firstOrFail();
         return response()->json($entreprise);
     }
 
@@ -86,22 +88,33 @@ class EntrepriseController extends Controller
             'email' => 'nullable|email|max:150'
         ]);
 
-        $entreprise = Entreprise::findOrFail($id);
-        $entreprise->update($request->all());
+        $entreprise = Entreprise::where('id_entreprise', $id)
+            ->where('is_deleted', false)
+            ->firstOrFail();
+        
+        $entreprise->update(array_merge($request->all(), ['last_update' => now()]));
         return response()->json($entreprise);
     }
 
     #[OA\Delete(
         path: "/api/entreprises/{id}",
-        summary: "Supprimer une entreprise",
+        summary: "Supprimer une entreprise (soft delete)",
         tags: ["Entreprises"]
     )]
     #[OA\Parameter(name: "id", in: "path", required: true, schema: new OA\Schema(type: "integer"))]
     #[OA\Response(response: 204, description: "Entreprise supprimée")]
     public function destroy(int $id): JsonResponse
     {
-        $entreprise = Entreprise::findOrFail($id);
-        $entreprise->delete();
+        $entreprise = Entreprise::where('id_entreprise', $id)
+            ->where('is_deleted', false)
+            ->firstOrFail();
+        
+        // Soft delete
+        $entreprise->update([
+            'is_deleted' => true,
+            'last_update' => now()
+        ]);
+        
         return response()->json(null, 204);
     }
 }

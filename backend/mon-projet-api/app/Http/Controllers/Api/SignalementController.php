@@ -22,7 +22,9 @@ class SignalementController extends Controller
     #[OA\Response(response: 200, description: "Liste des signalements")]
     public function index(): JsonResponse
     {
-        $signalements = Signalement::with(['probleme', 'user'])->get();
+        $signalements = Signalement::with(['probleme', 'user'])
+            ->where('is_deleted', false)
+            ->get();
         return response()->json($signalements);
     }
 
@@ -66,7 +68,10 @@ class SignalementController extends Controller
     #[OA\Response(response: 200, description: "Détails du signalement")]
     public function show(string $id): JsonResponse
     {
-        $signalement = Signalement::with(['probleme', 'user'])->findOrFail($id);
+        $signalement = Signalement::with(['probleme', 'user'])
+            ->where('id_signalement', $id)
+            ->where('is_deleted', false)
+            ->firstOrFail();
         return response()->json($signalement);
     }
 
@@ -81,6 +86,7 @@ class SignalementController extends Controller
     {
         $signalements = Signalement::with('user')
             ->where('id_probleme', $problemeId)
+            ->where('is_deleted', false)
             ->orderBy('date_signalement', 'desc')
             ->get();
         
@@ -89,15 +95,23 @@ class SignalementController extends Controller
 
     #[OA\Delete(
         path: "/api/signalements/{id}",
-        summary: "Supprimer un signalement",
+        summary: "Supprimer un signalement (soft delete)",
         tags: ["Signalements"]
     )]
     #[OA\Parameter(name: "id", in: "path", required: true, schema: new OA\Schema(type: "string"))]
     #[OA\Response(response: 204, description: "Signalement supprimé")]
     public function destroy(string $id): JsonResponse
     {
-        $signalement = Signalement::findOrFail($id);
-        $signalement->delete();
+        $signalement = Signalement::where('id_signalement', $id)
+            ->where('is_deleted', false)
+            ->firstOrFail();
+        
+        // Soft delete
+        $signalement->update([
+            'is_deleted' => true,
+            'last_update' => now()
+        ]);
+        
         return response()->json(null, 204);
     }
 }

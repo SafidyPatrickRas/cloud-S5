@@ -23,7 +23,7 @@ class UserController extends Controller
     #[OA\Response(response: 200, description: "Liste des utilisateurs")]
     public function index(): JsonResponse
     {
-        $users = User::with('role')->get();
+        $users = User::with('role')->where('is_deleted', false)->get();
         return response()->json($users);
     }
 
@@ -53,7 +53,7 @@ class UserController extends Controller
     #[OA\Response(response: 404, description: "Utilisateur non trouvé")]
     public function update(Request $request, string $id): JsonResponse
     {
-        $user = User::findOrFail($id);
+        $user = User::where('id', $id)->where('is_deleted', false)->firstOrFail();
 
         $request->validate([
             'email' => 'sometimes|email|unique:users,email,' . $user->id,
