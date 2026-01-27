@@ -31,6 +31,8 @@ CREATE TABLE users (
     blocked BOOLEAN NOT NULL DEFAULT false,
     role_id INTEGER NOT NULL,
     failed_attempts INT DEFAULT 0,
+    is_deleted BOOLEAN DEFAULT FALSE,
+    last_update TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT fk_user_role FOREIGN KEY (role_id) REFERENCES roles (id)
@@ -70,7 +72,10 @@ CREATE TABLE entreprise (
     nom VARCHAR(150) NOT NULL,
     contact VARCHAR(150),
     telephone VARCHAR(50),
-    email VARCHAR(150)
+    email VARCHAR(150),
+    is_deleted BOOLEAN DEFAULT FALSE,
+    last_update TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 /* =========================
@@ -88,7 +93,11 @@ CREATE TABLE probleme_routier (
     ) DEFAULT 'NOUVEAU',
     surface_m2 NUMERIC (10, 2),
     budget NUMERIC (14, 2),
+    lieu VARCHAR(255),
+    description TEXT,
     id_entreprise INT,
+    is_deleted BOOLEAN DEFAULT FALSE,
+    last_update TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT fk_probleme_entreprise FOREIGN KEY (id_entreprise) REFERENCES entreprise (id_entreprise) ON DELETE SET NULL
@@ -108,6 +117,8 @@ CREATE TABLE signalement (
     user_id UUID,
     date_signalement TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     commentaire TEXT,
+    is_deleted BOOLEAN DEFAULT FALSE,
+    last_update TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT fk_signalement_probleme FOREIGN KEY (id_probleme) REFERENCES probleme_routier (id_probleme) ON DELETE CASCADE,
     CONSTRAINT fk_signalement_user FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE SET NULL
 );
@@ -138,10 +149,15 @@ SELECT
     p.status,
     p.surface_m2,
     p.budget,
+    p.lieu,
+    p.description,
+    p.is_deleted,
+    p.last_update,
     e.nom AS entreprise
 FROM
     probleme_routier p
-    LEFT JOIN entreprise e ON p.id_entreprise = e.id_entreprise;
+    LEFT JOIN entreprise e ON p.id_entreprise = e.id_entreprise
+WHERE p.is_deleted = FALSE;
 
 /* =========================
 VUE RECAP
@@ -155,7 +171,8 @@ SELECT
         (SUM(CASE WHEN status='TERMINE' THEN 1 ELSE 0 END)::NUMERIC * 100)
         / NULLIF(COUNT(*),0), 2
     ) AS avancement_pct
-FROM probleme_routier;
+FROM probleme_routier
+WHERE is_deleted = FALSE;
 
 /* =========================
 DONNÉES INITIALES

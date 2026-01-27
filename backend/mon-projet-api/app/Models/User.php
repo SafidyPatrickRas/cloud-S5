@@ -22,7 +22,9 @@ class User extends Authenticatable implements JWTSubject
         'prenom',
         'role_id',
         'blocked',
-        'failed_attempts'
+        'failed_attempts',
+        'is_deleted',
+        'last_update'
     ];
 
     protected $hidden = [
@@ -31,6 +33,8 @@ class User extends Authenticatable implements JWTSubject
 
     protected $casts = [
         'blocked' => 'boolean',
+        'is_deleted' => 'boolean',
+        'last_update' => 'datetime',
     ];
 
     protected static function boot()

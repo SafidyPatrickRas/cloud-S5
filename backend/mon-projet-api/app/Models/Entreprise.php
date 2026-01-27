@@ -14,7 +14,14 @@ class Entreprise extends Model
         'nom',
         'contact',
         'telephone',
-        'email'
+        'email',
+        'is_deleted',
+        'last_update'
+    ];
+
+    protected $casts = [
+        'is_deleted' => 'boolean',
+        'last_update' => 'datetime',
     ];
 
     public $timestamps = true;

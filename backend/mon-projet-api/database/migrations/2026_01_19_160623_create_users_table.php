@@ -20,6 +20,8 @@ return new class extends Migration
             $table->boolean('blocked')->default(false);
             $table->foreignId('role_id')->constrained('roles');
             $table->integer('failed_attempts')->default(0);
+            $table->boolean('is_deleted')->default(false);
+            $table->timestamp('last_update')->nullable();
             $table->timestamps();
         });
     }

@@ -18,11 +18,15 @@ class Signalement extends Model
         'id_probleme',
         'user_id',
         'date_signalement',
-        'commentaire'
+        'commentaire',
+        'is_deleted',
+        'last_update'
     ];
 
     protected $casts = [
         'date_signalement' => 'datetime',
+        'is_deleted' => 'boolean',
+        'last_update' => 'datetime',
     ];
 
     public $timestamps = true;

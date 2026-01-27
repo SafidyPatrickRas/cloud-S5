@@ -14,6 +14,9 @@ return new class extends Migration
             $table->string('contact', 150)->nullable();
             $table->string('telephone', 50)->nullable();
             $table->string('email', 150)->nullable();
+            $table->boolean('is_deleted')->default(false);
+            $table->timestamp('last_update')->nullable();
+            $table->timestamps();
         });
     }
 
