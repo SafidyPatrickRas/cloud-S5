@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\EntrepriseController;
 use App\Http\Controllers\Api\ProblemeRoutierController;
 use App\Http\Controllers\Api\SignalementController;
+use App\Http\Controllers\Api\SyncController;
 
 // Auth
 Route::post('login', [LoginAttemptController::class, 'login']);
@@ -26,6 +27,9 @@ Route::apiResource('signalements', SignalementController::class);
 // Users
 Route::get('users', [UserController::class, 'index']);
 Route::put('users/{id}', [UserController::class, 'update']);
+
+// Sync endpoints
+Route::post('sync/pull', [SyncController::class, 'pull']);
 
 // Signalements par problème
 Route::get('problemes/{problemeId}/signalements', [SignalementController::class, 'getByProbleme']);

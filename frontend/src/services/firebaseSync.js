@@ -51,6 +51,22 @@ export const syncService = {
           await firebaseService.addOrUpdateSignalement(s);
         }
       }
+      // After pushing local changes to Firebase, fetch the current Firebase state
+      // and send it to the backend so the server can upsert into the local DB (pull).
+      const finalFbProblemes = await firebaseService.getProblemes();
+      const finalFbUsers = await firebaseService.getUsers();
+      const finalFbSignalements = await firebaseService.getSignalements();
+
+      try {
+        await api.post('/sync/pull', {
+          problemes: finalFbProblemes,
+          users: finalFbUsers,
+          signalements: finalFbSignalements
+        });
+        console.log('✅ Backend pull endpoint invoked successfully');
+      } catch (err) {
+        console.error('❌ Error calling backend pull endpoint:', err);
+      }
 
       console.log('✅ Synchronisation terminée !');
     } catch (error) {
