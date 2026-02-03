@@ -1,0 +1,129 @@
+.map-wrapper {
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 12px 30px rgba(2, 6, 23, 0.45);
+}
+/* Style personnalisé pour les tooltips permanents */
+.custom-tooltip {
+  background: rgba(15, 23, 42, 0.95) !important;
+  border: 1px solid rgba(148, 163, 184, 0.25) !important;
+  border-radius: 6px !important;
+  padding: 6px 12px !important;
+  font-weight: 600 !important;
+  box-shadow: 0 8px 24px rgba(2, 6, 23, 0.45) !important;
+  color: #e2e8f0 !important;
+  font-size: 0.85rem !important;
+}
+
+.custom-tooltip::before {
+  border-top-color: rgba(15, 23, 42, 0.95) !important;
+}
+.leaflet-container {
+  font-family: inherit;
+}
+
+/* Marqueurs personnalisés par status */
+.custom-marker {
+  width: 20px !important;
+  height: 20px !important;
+  border-radius: 50% !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.custom-marker .marker-dot {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  box-sizing: border-box;
+}
+
+.custom-marker.status-nouveau .marker-dot {
+  background: #e53e3e;
+}
+
+.custom-marker.status-en-cours .marker-dot {
+  background: #dd6b20;
+}
+
+.custom-marker.status-termine .marker-dot {
+  background: #38a169;
+}
+
+.leaflet-marker-icon.custom-marker:hover {
+  transform: scale(1.2);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+}
+
+/* Personnalisation des contrôles Leaflet */
+.leaflet-control-zoom {
+  border: none !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15) !important;
+}
+
+.leaflet-control-zoom a {
+  border-radius: 4px !important;
+  color: #38bdf8 !important;
+}
+
+.leaflet-control-zoom a:hover {
+  background-color: #38bdf8 !important;
+  color: #0b1120 !important;
+}
+
+/* Style des popups */
+.leaflet-popup-content-wrapper {
+  border-radius: 12px;
+  background: rgba(15, 23, 42, 0.95);
+  color: #e2e8f0;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  box-shadow: 0 18px 40px rgba(2, 6, 23, 0.45);
+}
+
+.leaflet-popup-tip {
+  background: rgba(15, 23, 42, 0.95);
+  box-shadow: 0 18px 40px rgba(2, 6, 23, 0.45);
+}
+
+.leaflet-popup-content {
+  margin: 14px 16px;
+}
+
+.map-tooltip {
+  color: #e2e8f0;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.map-popup {
+  display: grid;
+  gap: 0.45rem;
+  font-size: 0.9rem;
+}
+
+.map-popup h4 {
+  margin: 0;
+  color: #f8fafc;
+  font-size: 1rem;
+}
+
+.map-popup .divider {
+  height: 1px;
+  background: rgba(148, 163, 184, 0.2);
+  border: none;
+}
+
+.map-popup .muted {
+  color: #94a3b8;
+  font-size: 0.8rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .map-wrapper {
+    border-radius: 10px;
+  }
+}

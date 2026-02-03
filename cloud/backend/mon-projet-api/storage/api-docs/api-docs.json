@@ -1,0 +1,1109 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Mon API Laravel 2026",
+        "description": "Documentation de mon API générée avec Swagger",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:8000",
+            "description": "Serveur Local"
+        }
+    ],
+    "paths": {
+        "/api/login": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Login utilisateur",
+                "operationId": "222b2625838e3c57e017987f73598fda",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "mdp"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "example": "test@example.com"
+                                    },
+                                    "mdp": {
+                                        "type": "string",
+                                        "example": "123456"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Connexion réussie"
+                    },
+                    "401": {
+                        "description": "Email ou mot de passe invalide"
+                    }
+                }
+            }
+        },
+        "/api/register": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Créer un nouvel utilisateur",
+                "operationId": "8e4e3cb7b46126f4696379d3c7eeb4ad",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "mdp",
+                                    "Id_role"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "example": "test@example.com"
+                                    },
+                                    "mdp": {
+                                        "type": "string",
+                                        "example": "123456"
+                                    },
+                                    "Id_role": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "fire_user_id": {
+                                        "type": "string",
+                                        "example": "b7Hk6pV0bVQq..."
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Utilisateur créé avec succès"
+                    },
+                    "422": {
+                        "description": "Données invalides"
+                    }
+                }
+            }
+        },
+        "/api/entreprises": {
+            "get": {
+                "tags": [
+                    "Entreprises"
+                ],
+                "summary": "Lister les entreprises",
+                "operationId": "7f9edf2d966d33903c18bd90ee7a0dfd",
+                "responses": {
+                    "200": {
+                        "description": "Liste des entreprises"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Entreprises"
+                ],
+                "summary": "Créer une entreprise",
+                "operationId": "883d1fed0716732a97e0d428ec084d0c",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "nom"
+                                ],
+                                "properties": {
+                                    "nom": {
+                                        "type": "string",
+                                        "example": "Feno SARL"
+                                    },
+                                    "is_deleted": {
+                                        "type": "boolean",
+                                        "example": false
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Entreprise créée"
+                    }
+                }
+            }
+        },
+        "/api/entreprises/{id}": {
+            "get": {
+                "tags": [
+                    "Entreprises"
+                ],
+                "summary": "Afficher une entreprise",
+                "operationId": "fa454084a3a74ba55fe3634872a81a17",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Entreprise trouvée"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Entreprises"
+                ],
+                "summary": "Modifier une entreprise",
+                "operationId": "db09dd91c137fe5832ebfdc3ca6fe5f6",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Entreprise modifiée"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Entreprises"
+                ],
+                "summary": "Supprimer une entreprise",
+                "operationId": "fc502310c692349bea4b024f2f81207e",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Entreprise supprimée"
+                    }
+                }
+            }
+        },
+        "/api/problemes": {
+            "get": {
+                "tags": [
+                    "Problemes"
+                ],
+                "summary": "Lister les problèmes",
+                "operationId": "39ac43e54d22eddd8c10e7156202b543",
+                "responses": {
+                    "200": {
+                        "description": "Liste des problèmes"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Problemes"
+                ],
+                "summary": "Créer un problème",
+                "operationId": "00fbb512747f8ff79b35e475824e4d52",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "Id_entreprise",
+                                    "Id_signalement"
+                                ],
+                                "properties": {
+                                    "budget": {
+                                        "type": "number",
+                                        "example": 15000.5
+                                    },
+                                    "surface": {
+                                        "type": "number",
+                                        "example": 120.75
+                                    },
+                                    "is_deleted": {
+                                        "type": "boolean",
+                                        "example": false
+                                    },
+                                    "Id_entreprise": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "Id_signalement": {
+                                        "type": "integer",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Problème créé"
+                    }
+                }
+            }
+        },
+        "/api/problemes/{id}": {
+            "get": {
+                "tags": [
+                    "Problemes"
+                ],
+                "summary": "Afficher un problème",
+                "operationId": "ecc098749ca4c7e0c385fed6ebf2ca75",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Problème trouvé"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Problemes"
+                ],
+                "summary": "Modifier un problème",
+                "operationId": "e6bf25526188ee8e8058a43265141da1",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Problème modifié"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Problemes"
+                ],
+                "summary": "Supprimer un problème",
+                "operationId": "550b1db8cf9ebadc6652b85962541b4a",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Problème supprimé"
+                    }
+                }
+            }
+        },
+        "/api/roles": {
+            "get": {
+                "tags": [
+                    "Roles"
+                ],
+                "summary": "Lister les rôles",
+                "operationId": "ca86f0a206144dfbd695b749b4b28f9d",
+                "responses": {
+                    "200": {
+                        "description": "Liste des rôles"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Roles"
+                ],
+                "summary": "Créer un rôle",
+                "operationId": "341b8b162b61267c7bd187500aea5bc4",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "libelle",
+                                    "niveau"
+                                ],
+                                "properties": {
+                                    "libelle": {
+                                        "type": "string",
+                                        "example": "Administrateur"
+                                    },
+                                    "niveau": {
+                                        "type": "string",
+                                        "example": "1"
+                                    },
+                                    "is_deleted": {
+                                        "type": "boolean",
+                                        "example": false
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Rôle créé"
+                    }
+                }
+            }
+        },
+        "/api/roles/{id}": {
+            "get": {
+                "tags": [
+                    "Roles"
+                ],
+                "summary": "Afficher un rôle",
+                "operationId": "15c404caf238f1861c81f68205d328e5",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Rôle trouvé"
+                    },
+                    "404": {
+                        "description": "Rôle non trouvé"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Roles"
+                ],
+                "summary": "Modifier un rôle",
+                "operationId": "c73ab816ae8fb7c34a995d37ba577082",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "libelle",
+                                    "niveau"
+                                ],
+                                "properties": {
+                                    "libelle": {
+                                        "type": "string",
+                                        "example": "Utilisateur"
+                                    },
+                                    "niveau": {
+                                        "type": "string",
+                                        "example": "2"
+                                    },
+                                    "is_deleted": {
+                                        "type": "boolean",
+                                        "example": false
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Rôle modifié"
+                    },
+                    "404": {
+                        "description": "Rôle non trouvé"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Roles"
+                ],
+                "summary": "Supprimer un rôle",
+                "operationId": "ffa6ef115d86b00cc6c54a6210019f9c",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Rôle supprimé"
+                    }
+                }
+            }
+        },
+        "/api/signalements": {
+            "get": {
+                "tags": [
+                    "Signalements"
+                ],
+                "summary": "Lister les signalements",
+                "operationId": "bc5f732d0a6199b18d23b59a8b220d23",
+                "responses": {
+                    "200": {
+                        "description": "Liste des signalements"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Signalements"
+                ],
+                "summary": "Créer un signalement",
+                "operationId": "1cef0a98122b3b522b3acde3044deee4",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "Id_status",
+                                    "Id_utilisateur"
+                                ],
+                                "properties": {
+                                    "position_": {
+                                        "type": "string",
+                                        "example": "-18.8792,47.5079"
+                                    },
+                                    "commentaire": {
+                                        "type": "string",
+                                        "example": "Route dégradée"
+                                    },
+                                    "is_deleted": {
+                                        "type": "boolean",
+                                        "example": false
+                                    },
+                                    "Id_status": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "Id_utilisateur": {
+                                        "type": "integer",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Signalement créé"
+                    }
+                }
+            }
+        },
+        "/api/signalements/{id}": {
+            "get": {
+                "tags": [
+                    "Signalements"
+                ],
+                "summary": "Afficher un signalement",
+                "operationId": "3377083d5e9916548675e39a1fae4652",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Signalement trouvé"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Signalements"
+                ],
+                "summary": "Modifier un signalement",
+                "operationId": "2d99fa354dfeb952d430f625264f1ff3",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Signalement modifié"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Signalements"
+                ],
+                "summary": "Supprimer un signalement",
+                "operationId": "fc993b1972ef126f5d52648b5cc781fd",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Signalement supprimé"
+                    }
+                }
+            }
+        },
+        "/api/statuses": {
+            "get": {
+                "tags": [
+                    "Status"
+                ],
+                "summary": "Lister les status",
+                "operationId": "8bc31408b679bd52a317923523467108",
+                "responses": {
+                    "200": {
+                        "description": "Liste des status"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Status"
+                ],
+                "summary": "Créer un status",
+                "operationId": "9feef4e3b031caedf53a634533847d40",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "libelle",
+                                    "niveau"
+                                ],
+                                "properties": {
+                                    "libelle": {
+                                        "type": "string",
+                                        "example": "Nouveau"
+                                    },
+                                    "niveau": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "is_deleted": {
+                                        "type": "string",
+                                        "example": "non"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Status créé"
+                    }
+                }
+            }
+        },
+        "/api/statuses/{id}": {
+            "get": {
+                "tags": [
+                    "Status"
+                ],
+                "summary": "Afficher un status",
+                "operationId": "700d24ee8a044d063a878f2c4555e35f",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Status trouvé"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Status"
+                ],
+                "summary": "Modifier un status",
+                "operationId": "9bb972cfd17ab981f264046328e07e8c",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Status modifié"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Status"
+                ],
+                "summary": "Supprimer un status",
+                "operationId": "7bf136ee555a4babc4b933d4536adf2d",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Status supprimé"
+                    }
+                }
+            }
+        },
+        "/api/tests": {
+            "get": {
+                "tags": [
+                    "Tests"
+                ],
+                "summary": "Lister les tests",
+                "operationId": "c3598ffb3c07bda8666677e0af191019",
+                "responses": {
+                    "200": {
+                        "description": "Liste des tests"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Tests"
+                ],
+                "summary": "Créer un test",
+                "operationId": "c7eb3253343224d6c1b7b1b4d40b2715",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Test API"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Description"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Test créé"
+                    }
+                }
+            }
+        },
+        "/api/tests/{id}": {
+            "get": {
+                "tags": [
+                    "Tests"
+                ],
+                "summary": "Afficher un test",
+                "operationId": "de30187932c824c2e3ab0c2c58d75c07",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Test trouvé"
+                    },
+                    "404": {
+                        "description": "Test non trouvé"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Tests"
+                ],
+                "summary": "Modifier un test",
+                "operationId": "ab4f548be935192551295fba7b6f95d4",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Test modifié"
+                    },
+                    "404": {
+                        "description": "Test non trouvé"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Tests"
+                ],
+                "summary": "Supprimer un test",
+                "operationId": "a45d0482034d370675c1eab805dcda68",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Test supprimé"
+                    }
+                }
+            }
+        },
+        "/api/users/{id}": {
+            "put": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Modifier les informations d'un utilisateur",
+                "operationId": "070e37fc9aff78ae73860751bc990ed3",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "example": "nouvel.email@example.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "example": "nouveauMotDePasse"
+                                    },
+                                    "role_id": {
+                                        "type": "integer",
+                                        "example": 2
+                                    },
+                                    "blocked": {
+                                        "type": "boolean",
+                                        "example": false
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Utilisateur modifié"
+                    },
+                    "404": {
+                        "description": "Utilisateur non trouvé"
+                    }
+                }
+            }
+        },
+        "/api/utilisateurs": {
+            "get": {
+                "tags": [
+                    "Utilisateurs"
+                ],
+                "summary": "Lister les utilisateurs",
+                "operationId": "6e23f57bbb8711de48e707b59792258a",
+                "responses": {
+                    "200": {
+                        "description": "Liste des utilisateurs"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Utilisateurs"
+                ],
+                "summary": "Créer un utilisateur",
+                "operationId": "2f9bff660d3ec2acb423971a29aec9f5",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "mdp",
+                                    "Id_role"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "example": "test@example.com"
+                                    },
+                                    "mdp": {
+                                        "type": "string",
+                                        "example": "123456"
+                                    },
+                                    "Id_role": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "id_deleted": {
+                                        "type": "boolean",
+                                        "example": false
+                                    },
+                                    "fire_user_id": {
+                                        "type": "string",
+                                        "example": "b7Hk6pV0bVQq..."
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Utilisateur créé"
+                    }
+                }
+            }
+        },
+        "/api/utilisateurs/{id}": {
+            "get": {
+                "tags": [
+                    "Utilisateurs"
+                ],
+                "summary": "Afficher un utilisateur",
+                "operationId": "ddaf85fef536a4e67b058c82124effbb",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Utilisateur trouvé"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Utilisateurs"
+                ],
+                "summary": "Modifier un utilisateur",
+                "operationId": "d3071c3380dc44fe0061e7f6019eae98",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Utilisateur modifié"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Utilisateurs"
+                ],
+                "summary": "Supprimer un utilisateur",
+                "operationId": "7f2e091a07c9b4ad7874d65acdb12ace",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Utilisateur supprimé"
+                    }
+                }
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Auth",
+            "description": "Gestion de l'inscription et du login"
+        },
+        {
+            "name": "Entreprises",
+            "description": "API CRUD pour les entreprises"
+        },
+        {
+            "name": "Problemes",
+            "description": "API CRUD pour les problèmes"
+        },
+        {
+            "name": "Roles",
+            "description": "API CRUD pour les rôles"
+        },
+        {
+            "name": "Signalements",
+            "description": "API CRUD pour les signalements"
+        },
+        {
+            "name": "Status",
+            "description": "API CRUD pour les status"
+        },
+        {
+            "name": "Tests",
+            "description": "API CRUD Test"
+        },
+        {
+            "name": "Users",
+            "description": "Gestion des utilisateurs"
+        },
+        {
+            "name": "Utilisateurs",
+            "description": "API CRUD pour les utilisateurs"
+        }
+    ]
+}
